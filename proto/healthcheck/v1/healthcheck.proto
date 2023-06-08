@@ -9,7 +9,7 @@ service HealthcheckAPI {
   rpc Healthcheck(HealthcheckRequest) returns (HealthcheckResponse) {
     option (google.api.http) = {
       get: "/api/v1/healthcheck"
-      additional_bindings: {get: "/healthcheckk"}
+      additional_bindings: {get: "/healthcheck"}
     };
     option (datalift.api.v1.action).type = READ;
     option (datalift.api.v1.disable_audit) = true;
