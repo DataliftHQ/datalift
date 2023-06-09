@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package datalift.document.v1;
+
+service ApplicationAPI {
+    rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {
+    //   option (google.api.http) = {
+    //     post: "/api/v1/document"
+    //     body: "*"
+    //   };
+    //   option (datalift.api.v1.action).type = CREATE;
+    }
+    
+    rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
+        //   option (google.api.http) = {
+        //     post: "/api/v1/document"
+        //     body: "*"
+        //   };
+        //   option (datalift.api.v1.action).type = CREATE;
+    }
+
+    rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {
+            //   option (google.api.http) = {
+            //     post: "/api/v1/document"
+            //     body: "*"
+            //   };
+            //   option (datalift.api.v1.action).type = CREATE;
+    }
+
+    rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
+    //   option (google.api.http) = {get: "/api/v1/document/{id}"};
+    //   option (datalift.api.v1.action).type = READ;
+    }
+
+    rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {
+    //   option (google.api.http) = {put: "/api/v1/document/{id}"};
+    //   option (datalift.api.v1.action).type = UPDATE;
+    }
+}
+
+message Application {
+    // id string
+    // name string
+    // envs [] id string | name string | type string
+    // created_at timestamp 
+    // created_by string
+}
+
+
+message CreateApplicationRequest {}
+message CreateApplicationResponse {}
+
+message DeleteApplicationRequest {}
+message DeleteApplicationResponse {}
+
+message GetApplicationRequest {}
+message GetApplicationResponse {}
+
+message ListApplicationsRequest {}
+message ListApplicationsResponse {}
+
+message UpdateApplicationRequest {}
+message UpdateApplicationResponse {}

@@ -1,4 +1,5 @@
-# Logs
+# tooling
+.yarn
 logs
 *.log
 npm-debug.log*
@@ -6,10 +7,32 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.tsbuildinfo
+package-lock.json
+**/.eslintcache
 
-node_modules
-dist
-dist-ssr
+# dependencies
+*node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+**/cypress/screenshots
+**/cypress/videos
+
+# production
+**/build
+**/dist
+**/dist-ssr
+storybook-static
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.local
 
 # Editor directories and files

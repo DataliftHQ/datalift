@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"github.com/DataliftHQ/datalift/backend/cmd/assets"
+	"github.com/DataliftHQ/datalift/backend/gateway"
 )
 
 func main() {
-	fmt.Println("datalift")
+	flags := gateway.ParseFlags()
+	components := gateway.CoreComponentFactory
+
+	gateway.Run(flags, components, assets.VirtualFS)
 }
