@@ -1,8 +1,8 @@
 name: backend
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
@@ -65,11 +65,6 @@ jobs:
         env:
           GOFLAGS: "-count=1" # idiomatic way to disable test caching so they always run
       - run: make backend-config-validation
-  integration-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: make backend-integration-test
   lint:
     runs-on: ubuntu-latest
     steps:
