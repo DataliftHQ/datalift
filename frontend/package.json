@@ -26,8 +26,20 @@
     "lint:fix": "eslint src --ext ts,tsx --fix",
     "lint:packages": "sort-package-json package.json --check",
     "lint:packages:fix": "sort-package-json package.json",
-    "test:licenses": "node license-linter.cjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:licenses": "node license-linter.cjs"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -47,18 +59,6 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.7"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "engines": {
     "node": ">=18.0.0 <19",
