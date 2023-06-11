@@ -1,17 +1,13 @@
 package meta
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/anypb"
 
-	apiv1 "DataliftHQ/datalift/backend/api/api/v1"
-	healthcheckv1 "github.com/DataliftHQ/datalift/api/healthcheck/v1"
+	apiv1 "github.com/DataliftHQ/datalift/backend/api/api/v1"
 	modulemock "github.com/DataliftHQ/datalift/backend/mock/module"
 	"github.com/DataliftHQ/datalift/backend/module/assets"
 	"github.com/DataliftHQ/datalift/backend/module/healthcheck"
@@ -31,7 +27,7 @@ func TestGetAction(t *testing.T) {
 	err = GenerateGRPCMetadata(r.GRPCServer())
 	assert.NoError(t, err)
 
-	action := GetAction("/clutch.healthcheck.v1.HealthcheckAPI/Healthcheck")
+	action := GetAction("/datalift.healthcheck.v1.HealthcheckAPI/Healthcheck")
 	assert.Equal(t, apiv1.ActionType_READ, action)
 
 	action = GetAction("/grpc.health.v1.Health/Check")
