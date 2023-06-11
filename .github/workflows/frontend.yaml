@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           check-latest: true
       - name: Enforce consistent Yarn version
         run: ./tools/install-yarn.sh
@@ -85,7 +85,7 @@ jobs:
           go-version: 1.19.x
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           check-latest: true
       - name: Enforce consistent Yarn version
         run: ./tools/install-yarn.sh
@@ -143,7 +143,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           check-latest: true
       - name: Enforce consistent Yarn version
         run: ./tools/install-yarn.sh
@@ -170,7 +170,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           check-latest: true
           registry-url: 'https://registry.npmjs.org'
       - name: Enforce consistent Yarn version
