@@ -21,6 +21,7 @@ gateway:
   middleware:
     - name: datalift.middleware.stats
     - name: datalift.middleware.validate
+    - name: datalift.middleware.authn
   listener:
     tcp:
       address: 0.0.0.0
@@ -29,6 +30,8 @@ gateway:
 modules:
   - name: datalift.module.assets
   - name: datalift.module.healthcheck
+  - name: datalift.module.authn
+  - name: datalift.module.application
 services:
   - name: datalift.service.db.postgres
     typed_config:
@@ -40,3 +43,20 @@ services:
         ssl_mode: DISABLE
         dbname: datalift
         password: datalift
+  - name: datalift.service.authn
+    typed_config:
+      "@type": types.google.com/datalift.config.service.authn.v1.Config
+      oidc:
+        issuer: https://accounts.google.com
+        client_id: 999252236553-2dd37nnqcf5ta2bh1lv12re5h5nd1jp3.apps.googleusercontent.com
+        client_secret: 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
+        redirect_url: "http://localhost:8080/auth/callback"
+        subject_claim_name_override: name
+        scopes:
+          - openid
+          - profile
+          - email
+      session_secret: 823916d0-cb6d-4aa5-858c-9630ae6a5634
+      enable_service_token_creation: true
+  - name: datalift.service.application
+  - name: datalift.service.workflow

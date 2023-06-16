@@ -35,7 +35,7 @@ const (
 	xForwardedHost = "X-Forwarded-Host"
 )
 
-var apiPattern = regexp.MustCompile(`^/v\d+/`)
+var apiPattern = regexp.MustCompile(`^(/auth/|/api/v\d+/)`)
 
 type assetHandler struct {
 	assetCfg *gatewayv1.Assets

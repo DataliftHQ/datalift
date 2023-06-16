@@ -1,64 +1,60 @@
 version: "3.8"
 services:
   postgres:
+    container_name: postgresql
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: datalift
       POSTGRES_PASSWORD: datalift
+      POSTGRES_DB: datalift
+    networks:
+      - datalift-network
     ports:
-      - "5432:5432"
-    restart: always
-  prometheus:
-    image: prom/prometheus:latest
+      - 5432:5432
     volumes:
-      - ./prometheus:/etc/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yaml'
-    ports:
-      - '9090:9090'
-  grafana:
-    image: grafana/grafana
-    volumes:
-      - ./grafana:/etc/grafana
-    user: "1000"
+      - /var/lib/postgresql/data
+  temporal:
+    container_name: temporal
     depends_on:
-      - prometheus
-    ports:
-      - '3000:3000'
-  cadence:
-    image: ubercadence/server:master-auto-setup
-    ports:
-      - "8000:8000"
-      - "8001:8001"
-      - "8002:8002"
-      - "8003:8003"
-      - "7933:7933"
-      - "7934:7934"
-      - "7935:7935"
-      - "7939:7939"
-      - "7833:7833"
-    links:
       - postgres
     environment:
-      - "DB=postgres"
-      - "DB_PORT=5432"
-      - "POSTGRES_USER=datalift"
-      - "POSTGRES_PWD=datalift"
-      - "POSTGRES_SEEDS=postgres"
-      - "PROMETHEUS_ENDPOINT_0=0.0.0.0:8000"
-      - "PROMETHEUS_ENDPOINT_1=0.0.0.0:8001"
-      - "PROMETHEUS_ENDPOINT_2=0.0.0.0:8002"
-      - "PROMETHEUS_ENDPOINT_3=0.0.0.0:8003"
-      - "DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml"
-    depends_on:
-      - postgres
-      - prometheus
-    restart: always
-  cadence-web:
-    image: ubercadence/web:latest
-    environment:
-      - "CADENCE_TCHANNEL_PEERS=cadence:7933"
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=datalift
+      - POSTGRES_PWD=datalift
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+    image: temporalio/auto-setup:latest
+    networks:
+      - datalift-network
     ports:
-      - "8088:8088"
+      - 7233:7233
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+  temporal-admin-tools:
+    container_name: temporal-admin-tools
     depends_on:
-      - cadence
+      - temporal
+    environment:
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    image: temporalio/admin-tools:latest
+    networks:
+      - datalift-network
+    stdin_open: true
+    tty: true
+  temporal-ui:
+    container_name: temporal-ui
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:latest
+    networks:
+      - datalift-network
+    ports:
+      - 8080:8080
+networks:
+  datalift-network:
+    driver: bridge
+    name: datalift-network

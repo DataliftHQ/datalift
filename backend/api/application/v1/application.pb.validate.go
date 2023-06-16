@@ -57,6 +57,41 @@ func (m *Application) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Id
+
+	// no validation rules for Name
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ApplicationValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ApplicationValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ApplicationValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for CreatedBy
+
 	if len(errors) > 0 {
 		return ApplicationMultiError(errors)
 	}
@@ -134,6 +169,108 @@ var _ interface {
 	ErrorName() string
 } = ApplicationValidationError{}
 
+// Validate checks the field values on ApplicationQuery with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *ApplicationQuery) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ApplicationQuery with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ApplicationQueryMultiError, or nil if none found.
+func (m *ApplicationQuery) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ApplicationQuery) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	if len(errors) > 0 {
+		return ApplicationQueryMultiError(errors)
+	}
+
+	return nil
+}
+
+// ApplicationQueryMultiError is an error wrapping multiple validation errors
+// returned by ApplicationQuery.ValidateAll() if the designated constraints
+// aren't met.
+type ApplicationQueryMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ApplicationQueryMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ApplicationQueryMultiError) AllErrors() []error { return m }
+
+// ApplicationQueryValidationError is the validation error returned by
+// ApplicationQuery.Validate if the designated constraints aren't met.
+type ApplicationQueryValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ApplicationQueryValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ApplicationQueryValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ApplicationQueryValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ApplicationQueryValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ApplicationQueryValidationError) ErrorName() string { return "ApplicationQueryValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ApplicationQueryValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sApplicationQuery.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ApplicationQueryValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ApplicationQueryValidationError{}
+
 // Validate checks the field values on CreateApplicationRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -155,6 +292,35 @@ func (m *CreateApplicationRequest) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetApplication()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateApplicationRequestValidationError{
+					field:  "Application",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateApplicationRequestValidationError{
+					field:  "Application",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetApplication()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateApplicationRequestValidationError{
+				field:  "Application",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return CreateApplicationRequestMultiError(errors)
@@ -360,6 +526,17 @@ func (m *DeleteApplicationRequest) validate(all bool) error {
 
 	var errors []error
 
+	if len(m.GetId()) < 1 {
+		err := DeleteApplicationRequestValidationError{
+			field:  "Id",
+			reason: "value length must be at least 1 bytes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return DeleteApplicationRequestMultiError(errors)
 	}
@@ -564,6 +741,17 @@ func (m *GetApplicationRequest) validate(all bool) error {
 
 	var errors []error
 
+	if len(m.GetId()) < 1 {
+		err := GetApplicationRequestValidationError{
+			field:  "Id",
+			reason: "value length must be at least 1 bytes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return GetApplicationRequestMultiError(errors)
 	}
@@ -665,6 +853,35 @@ func (m *GetApplicationResponse) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetApplication()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetApplicationResponseValidationError{
+					field:  "Application",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetApplicationResponseValidationError{
+					field:  "Application",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetApplication()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetApplicationResponseValidationError{
+				field:  "Application",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return GetApplicationResponseMultiError(errors)
@@ -971,6 +1188,17 @@ func (m *UpdateApplicationRequest) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if len(m.GetId()) < 1 {
+		err := UpdateApplicationRequestValidationError{
+			field:  "Id",
+			reason: "value length must be at least 1 bytes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return UpdateApplicationRequestMultiError(errors)
