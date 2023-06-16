@@ -42,8 +42,7 @@ ensure_fd() {
   fi
 }
 
-cd "${REPO_ROOT}/backend"
 ensure_binary
 ensure_fd
 
-"${RELEASE_BINARY}" 
+"${RELEASE_BINARY}"

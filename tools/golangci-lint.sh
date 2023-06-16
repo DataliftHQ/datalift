@@ -15,7 +15,7 @@ ARCH=amd64
 RELEASE_BINARY="${BUILD_BIN}/${NAME}-${RELEASE}"
 
 main() {
-  cd "${REPO_ROOT}/backend"
+  cd "${REPO_ROOT}/server"
   ensure_binary
 
   "${RELEASE_BINARY}" "$@"

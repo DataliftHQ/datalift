@@ -18,60 +18,60 @@ PROJECT_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 .PHONY: proto # Generate protobuf assets.
 proto:
 	buf generate
-	cd backend && buf generate
+	cd server && buf generate
 
 .PHONY: proto-lint # Lint the generated protobuf assets.
 proto-lint:
 	buf lint
-	cd backend && buf lint
+	cd server && buf lint
 
-.PHONY: proto-verify # Verify proto changes include generate backend assets.
+.PHONY: proto-verify # Verify proto changes include generate server assets.
 proto-verify:
-	find backend/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
+	find server/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
 	$(MAKE) proto
-	tools/ensure-no-diff.sh backend/api backend/config
+	tools/ensure-no-diff.sh server/api server/config
 
-.PHONY: backend # Build the standalone backend.
-backend: preflight-checks-backend
-	cd backend && go build -o ../build/server -ldflags="-X main.version=$(VERSION)"
+.PHONY: server # Build the standalone server.
+server: preflight-checks-server
+	cd server && go build -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
-.PHONY: backend-with-assets # Build the backend with frontend assets.
-backend-with-assets: preflight-checks-backend
-	cd backend && go run cmd/assets/generate.go ../frontend/build && go build -tags withAssets -o ../build/server -ldflags="-X main.version=$(VERSION)"
+.PHONY: server-with-assets # Build the server with frontend assets.
+server-with-assets: preflight-checks-server
+	cd server && go run cmd/assets/generate.go ../frontend/build && go build -tags withAssets -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
-.PHONY: backend-dev # Start the backend in development mode.
-backend-dev: preflight-checks-backend
+.PHONY: server-dev # Start the server in development mode.
+server-dev: preflight-checks-server
 	tools/air.sh
 
-.PHONY: backend-dev-mock # Start the backend in development mode with mock responses.
-backend-dev-mock:
-	cd backend && go run mock/gateway.go
+.PHONY: server-dev-mock # Start the server in development mode with mock responses.
+server-dev-mock:
+	cd server && go run mock/gateway.go
 
-.PHONY: backend-lint # Lint the backend code.
-backend-lint: preflight-checks-backend
+.PHONY: server-lint # Lint the server code.
+server-lint: preflight-checks-server
 	tools/golangci-lint.sh run --timeout 2m30s
 
-.PHONY: backend-lint-fix # Lint and fix the backend code.
-backend-lint-fix:
+.PHONY: server-lint-fix # Lint and fix the server code.
+server-lint-fix:
 	tools/golangci-lint.sh run --fix
-	cd backend && go mod tidy
+	cd server && go mod tidy
 
-.PHONY: backend-test # Run unit tests for the backend code.
-backend-test: preflight-checks-backend
-	cd backend && go test -race -covermode=atomic ./...
+.PHONY: server-test # Run unit tests for the server code.
+server-test: preflight-checks-server
+	cd server && go test -race -covermode=atomic ./...
 
-.PHONY: backend-verify # Verify go modules' requirements files are clean.
-backend-verify:
-	cd backend && go mod tidy
-	tools/ensure-no-diff.sh backend
+.PHONY: server-verify # Verify go modules' requirements files are clean.
+server-verify:
+	cd server && go mod tidy
+	tools/ensure-no-diff.sh server
 
-.PHONY: backend-config-validation
-backend-config-validation:
-	cd backend && go run main.go -validate -c datalift-config.yaml
+.PHONY: server-config-validation
+server-config-validation:
+	cd server && go run main.go -validate -c datalift-config.yaml
 
-.PHONY: preflight-checks-backend
-preflight-checks-backend:
-	@tools/preflight-checks.sh backend
+.PHONY: preflight-checks-server
+preflight-checks-server:
+	@tools/preflight-checks.sh server
 
 .PHONY: frontend # Build production frontend assets.
 frontend: yarn-ensure preflight-checks-frontend yarn-install
@@ -116,23 +116,23 @@ preflight-checks-frontend:
 
 .PHONY: dev # Run the Clutch application in development mode.
 dev:
-	$(MAKE) -j2 backend-dev frontend-dev
+	$(MAKE) -j2 server-dev frontend-dev
 
 .PHONY: dev-mock # Run the Clutch application in development mode with mock responses.
 dev-mock:
-	$(MAKE) -j2 backend-dev-mock frontend-dev
+	$(MAKE) -j2 server-dev-mock frontend-dev
 
 .PHONY: lint # Lint all of the code.
-lint: proto-lint backend-lint frontend-lint
+lint: proto-lint server-lint frontend-lint
 
 .PHONY: lint-fix # Lint and fix all of the code.
-lint-fix: backend-lint-fix frontend-lint-fix
+lint-fix: server-lint-fix frontend-lint-fix
 
 .PHONY: test # Unit test all of the code.
-test: backend-test frontend-test
+test: server-test frontend-test
 
 .PHONY: verify # Verify all of the code.
-verify: proto-verify backend-verify frontend-verify
+verify: proto-verify server-verify frontend-verify
 
 .PHONY: clean # Remove build and cache artifacts.
 clean:

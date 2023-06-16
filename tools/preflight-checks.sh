@@ -52,7 +52,7 @@ os() {
   fi
 }
 
-backend() {
+server() {
   if ! command -v go -v &> /dev/null; then
     echo "golang is not installed or cannot be found in the current PATH, this is a required dependency."
     did_checks_pass=false
@@ -97,13 +97,13 @@ main() {
   os
 
   if [ $# -ge 1 ] && [ -n "$1" ]; then
-    if [ "$1" == "backend" ]; then
-      backend
+    if [ "$1" == "server" ]; then
+      server
     elif [ "$1" == "frontend" ]; then
       frontend
     fi
   else
-    backend
+    server
     frontend
   fi
 
