@@ -7,11 +7,23 @@
   <em>Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily.</em>
 </p>
 <p align="center">
+  <a href="https://github.com/datalifthq/datalift/stargazers/" target="_blank">
+    <img src="https://img.shields.io/github/stars/datalifthq/datalift?style=social&label=Star&maxAge=2592000" alt="Test">
+  </a>
+  <a href="https://github.com/datalifthq/datalift/releases" target="_blank">
+    <img src="https://img.shields.io/github/v/release/datalifthq/datalift?color=white" alt="Release">
+  </a>
+  <a href="https://datalift.slack.com/" target="_blank">
+    <img src="https://img.shields.io/badge/slack-join-white.svg?logo=slack" alt="Slack">
+  </a>
+  <a href="https://github.com/datalifthq/datalift/tree/master/LICENSE" target="_blank">
+    <img src="https://img.shields.io/static/v1?label=license&message=MPL-2.0&color=white" alt="License">
+  </a>
 </p>
 
 ### Contributing
 
-If you've found a problem with Datalift, please open a [GitHub issue](https://github.com/datalifthq/datalift/issues/new/choose). To contribute to Datalift and see our [Code of Conduct](.github/CODE_OF_CONDUCT.md). We have a list of [good first issues](https://github.com/datalifthq/datalift/labels/contributor-program) that contain bugs that have a relatively limited scope. This is a great place to get started, gain experience, and get familiar with our contribution process.
+If you've found a problem with Datalift, please open a [GitHub issue](https://github.com/datalifthq/datalift/issues/new/choose). To contribute to Datalift and see our [Code of Conduct](https://github.com/datalifthq/datalift/tree/master/.github/CODE_OF_CONDUCT.md). We have a list of [good first issues](https://github.com/datalifthq/datalift/labels/contributor-program) that contain bugs that have a relatively limited scope. This is a great place to get started, gain experience, and get familiar with our contribution process.
 
 ### Security
 
@@ -19,7 +31,7 @@ Datalift takes security issues very seriously. **Please do not file GitHub issue
 
 ### License
 
-See the [LICENSE](LICENSE) file for licensing information
+See the [LICENSE](https://github.com/datalifthq/datalift/tree/master/LICENSE) file for licensing information
 
 ### Thank You
 
