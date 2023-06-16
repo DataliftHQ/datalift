@@ -154,3 +154,11 @@ dev-k8s-down:
 .PHONY: preflight-checks
 preflight-checks:
 	@tools/preflight-checks.sh
+
+.PHONY: preflight-checks-worker
+preflight-checks-worker:
+	@tools/preflight-checks.sh worker
+
+.PHONY: worker # Build the standalone worker.
+worker: preflight-checks-worker
+	cd worker && go build -o ../build/worker -ldflags="-X main.version=$(VERSION)"

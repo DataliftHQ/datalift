@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+  datalift-worker:
+    build:
+      context: ../../
+      dockerfile: ./worker/Dockerfile
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    networks:
+      - datalift-network
+    depends_on:
+      - temporal
+    restart: always
   postgres:
     container_name: postgresql
     image: postgres:15-alpine

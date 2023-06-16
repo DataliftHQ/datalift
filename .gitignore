@@ -23,5 +23,6 @@ go.work
 .env.local
 build
 .air
+attic
 
 backend/cmd/assets/generated_assets.go
