@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package datalift.document.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+import "api/v1/annotations.proto";
+
+service ApplicationAPI {
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/applications"
+      body: "application"
+    };
+    option (datalift.api.v1.action).type = CREATE;
+  }
+
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/applications/{id}"
+    };
+    option (datalift.api.v1.action).type = DELETE;
+  }
+
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/applications/{id}"
+    };
+    option (datalift.api.v1.action).type = READ;
+  }
+
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
+    option (google.api.http).get = "/api/v1/applications";
+    option (datalift.api.v1.action).type = READ;
+  }
+
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/applications/{id}"
+      body: "*"
+    };
+    option (datalift.api.v1.action).type = UPDATE;
+  }
+}
+
+message Application {
+  string id = 1;
+  string name = 2;
+
+  google.protobuf.Timestamp created_at = 4;
+  string created_by = 5;
+
+    // envs [] id string | name string | type string
+  // namespace
+}
+
+message ApplicationQuery {
+  string name = 1;
+}
+//
+//message ApplicationQuery {
+//  // the application's name
+//  optional string name = 1;
+//  // forces application reconciliation if set to true
+//  optional string refresh = 2;
+//  // the project names to restrict returned list applications
+//  repeated string projects = 3;
+//  // when specified with a watch call, shows changes that occur after that particular version of a resource.
+//  optional string resourceVersion = 4;
+//  // the selector to restrict returned list to applications only with matched labels
+//  optional string selector = 5;
+//  // the repoURL to restrict returned list applications
+//  optional string repo = 6;
+//  // the application's namespace
+//  optional string appNamespace = 7;
+//  // the project names to restrict returned list applications (legacy name for backwards-compatibility)
+//  repeated string project = 8;
+//}
+
+message CreateApplicationRequest {
+  Application application = 1;
+}
+
+message CreateApplicationResponse {}
+
+message DeleteApplicationRequest {
+  string id = 1 [ (validate.rules).string = {min_bytes : 1} ];
+}
+message DeleteApplicationResponse {}
+
+message GetApplicationRequest {
+  string id = 1 [ (validate.rules).string = {min_bytes : 1} ];
+}
+message GetApplicationResponse {
+  Application application = 1;
+}
+
+message ListApplicationsRequest {}
+message ListApplicationsResponse {}
+
+message UpdateApplicationRequest {
+  string id = 1 [ (validate.rules).string = {min_bytes : 1} ];
+}
+
+message UpdateApplicationResponse {}

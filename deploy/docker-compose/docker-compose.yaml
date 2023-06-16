@@ -1,0 +1,71 @@
+version: "3.8"
+services:
+  datalift-worker:
+    build:
+      context: ../../
+      dockerfile: ./worker/Dockerfile
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    networks:
+      - datalift-network
+    depends_on:
+      - temporal
+    restart: always
+  postgres:
+    container_name: postgresql
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: datalift
+      POSTGRES_PASSWORD: datalift
+      POSTGRES_DB: datalift
+    networks:
+      - datalift-network
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/lib/postgresql/data
+  temporal:
+    container_name: temporal
+    depends_on:
+      - postgres
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=datalift
+      - POSTGRES_PWD=datalift
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+    image: temporalio/auto-setup:latest
+    networks:
+      - datalift-network
+    ports:
+      - 7233:7233
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+  temporal-admin-tools:
+    container_name: temporal-admin-tools
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    image: temporalio/admin-tools:latest
+    networks:
+      - datalift-network
+    stdin_open: true
+    tty: true
+  temporal-ui:
+    container_name: temporal-ui
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:latest
+    networks:
+      - datalift-network
+    ports:
+      - 8888:8080
+networks:
+  datalift-network:
+    driver: bridge
+    name: datalift-network

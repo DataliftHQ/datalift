@@ -1,0 +1,67 @@
+{
+  "name": "datalift",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily",
+  "keywords": [
+    "datalift",
+    "platform",
+    "orchestrator"
+  ],
+  "homepage": "https://datalift.io",
+  "bugs": {
+    "url": "https://github.com/DataliftHQ/datalift/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DataliftHQ/datalift.git"
+  },
+  "workspaces": [
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts,tsx --fix",
+    "lint:packages": "sort-package-json package.json --check",
+    "lint:packages:fix": "sort-package-json package.json",
+    "preview": "vite preview",
+    "test:licenses": "node license-linter.cjs"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.11",
+    "@types/react-dom": "^18.2.4",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
+    "@vitejs/plugin-react": "^4.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "license-checker": "^25.0.1",
+    "sort-package-json": "^2.4.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-tsconfig-paths": "^4.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0 <19",
+    "yarn": "^1.22.19"
+  }
+}
