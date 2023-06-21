@@ -1,16 +1,5 @@
 version: "3.8"
 services:
-  datalift-worker:
-    build:
-      context: ../../
-      dockerfile: ./worker/Dockerfile
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-    networks:
-      - datalift-network
-    depends_on:
-      - temporal
-    restart: always
   postgres:
     container_name: postgresql
     image: postgres:15-alpine
@@ -65,6 +54,32 @@ services:
       - datalift-network
     ports:
       - 8888:8080
+  https-proxy:
+    container_name: https-proxy
+    image: nginx:latest
+    ports:
+      - 9090:9090
+      - 9443:9443
+    networks:
+      - datalift-network
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/dhparam.pem:/etc/nginx/dhparam.pem
+      - ./nginx/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
+      - ./nginx/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
+      - ./nginx/ssl-params.conf:/etc/nginx/ssl-params.conf
+  datalift-worker:
+    container_name: datalift-worker
+    build:
+      context: ../../
+      dockerfile: ./worker/Dockerfile
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    networks:
+      - datalift-network
+    depends_on:
+      - temporal
+    restart: always
 networks:
   datalift-network:
     driver: bridge
