@@ -21,7 +21,7 @@ updates:
       prefix: "chore"
       include: "scope"
   - package-ecosystem: "gomod"
-    directory: "/backend"
+    directory: "/"
     schedule:
       interval: "daily"
       time: "08:00"
@@ -30,8 +30,8 @@ updates:
     commit-message:
       prefix: "feat"
       include: "scope"
-  - package-ecosystem: "yarn"
-    directory: "/frontend"
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "daily"
       time: "08:00"
