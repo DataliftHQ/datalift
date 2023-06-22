@@ -1,0 +1,12 @@
+__fixtures__
+__mocks__
+dist
+node_modules
+.yarn
+.history
+build
+coverage
+.eslintrc.cjs
+*.config.ts
+*.setup.ts
+src/api

@@ -1,0 +1,108 @@
+{
+  "name": "datalift",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily",
+  "keywords": [
+    "datalift",
+    "platform",
+    "orchestrator"
+  ],
+  "homepage": "https://datalift.io",
+  "bugs": {
+    "url": "https://github.com/DataliftHQ/datalift/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DataliftHQ/datalift.git"
+  },
+  "workspaces": [
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts,tsx --fix",
+    "lint:packages": "sort-package-json package.json --check",
+    "lint:packages:fix": "sort-package-json package.json",
+    "preview": "vite preview",
+    "test:licenses": "node license-linter.cjs"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@bufbuild/connect-web": "^0.8.4",
+    "@bufbuild/protobuf": "^1.2.1",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@hookform/resolvers": "^3.1.0",
+    "@mui/base": "^5.0.0-beta.4",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.3",
+    "@mui/system": "^5.13.2",
+    "@mui/x-date-pickers": "^6.6.0",
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "dayjs": "^1.11.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.44.3",
+    "react-redux": "^8.0.7",
+    "react-router-dom": "^6.11.2",
+    "redux-logger": "^3.0.6",
+    "web-vitals": "^3.3.2",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.3.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.2.5",
+    "@types/react": "^18.2.11",
+    "@types/react-dom": "^18.2.4",
+    "@types/redux-logger": "^3.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
+    "@vitejs/plugin-react": "^4.0.0",
+    "cypress": "^12.12.0",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-cypress": "^2.13.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-testing-library": "^5.10.2",
+    "license-checker": "^25.0.1",
+    "sort-package-json": "^2.4.1",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "prettier": "^2.8.7",
+    "sass": "^1.62.1",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-tsconfig-paths": "^4.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0 <19",
+    "yarn": "^1.22.19"
+  }
+}
