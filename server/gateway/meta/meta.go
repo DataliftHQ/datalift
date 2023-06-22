@@ -15,8 +15,8 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	apiv1 "go.datalift.io/datalift/server/api/api/v1"
-	auditv1 "go.datalift.io/datalift/server/api/audit/v1"
+	auditv1 "go.datalift.io/datalift/api/audit/v1"
+	commonv1 "go.datalift.io/datalift/api/common/v1"
 )
 
 var (
@@ -25,11 +25,11 @@ var (
 
 	fieldNameRegexp = regexp.MustCompile(`{(\w+)}`)
 
-	actionTypeDescriptor          = apiv1.E_Action.TypeDescriptor()
-	auditDisabledTypeDescriptor   = apiv1.E_DisableAudit.TypeDescriptor()
-	identifierTypeDescriptor      = apiv1.E_Id.TypeDescriptor()
-	redactedMessageTypeDescriptor = apiv1.E_Redacted.TypeDescriptor()
-	referenceTypeDescriptor       = apiv1.E_Reference.TypeDescriptor()
+	actionTypeDescriptor          = commonv1.E_Action.TypeDescriptor()
+	auditDisabledTypeDescriptor   = commonv1.E_DisableAudit.TypeDescriptor()
+	identifierTypeDescriptor      = commonv1.E_Id.TypeDescriptor()
+	redactedMessageTypeDescriptor = commonv1.E_Redacted.TypeDescriptor()
+	referenceTypeDescriptor       = commonv1.E_Reference.TypeDescriptor()
 )
 
 const typePrefix = "type.googleapis.com/"
@@ -56,17 +56,17 @@ func GenerateGRPCMetadata(server *grpc.Server) error {
 	return nil
 }
 
-func GetAction(method string) apiv1.ActionType {
+func GetAction(method string) commonv1.ActionType {
 	md, ok := methodDescriptors[method]
 	if !ok {
-		return apiv1.ActionType_UNSPECIFIED
+		return commonv1.ActionType_UNSPECIFIED
 	}
 	opts := md.GetMethodOptions().ProtoReflect()
 
 	if !opts.Has(actionTypeDescriptor) {
-		return apiv1.ActionType_UNSPECIFIED
+		return commonv1.ActionType_UNSPECIFIED
 	}
-	return opts.Get(actionTypeDescriptor).Message().Interface().(*apiv1.Action).Type
+	return opts.Get(actionTypeDescriptor).Message().Interface().(*commonv1.Action).Type
 }
 
 func IsAuditDisabled(method string) bool {
@@ -87,7 +87,7 @@ func ClearLogDisabledFields(m proto.Message) proto.Message {
 	pb := m.ProtoReflect()
 	pb.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
 		opts := fd.Options().(*descriptorpb.FieldOptions)
-		if proto.HasExtension(opts, apiv1.E_Log) && !proto.GetExtension(opts, apiv1.E_Log).(bool) {
+		if proto.HasExtension(opts, commonv1.E_Log) && !proto.GetExtension(opts, commonv1.E_Log).(bool) {
 			pb.Clear(fd)
 			return true // Continue.
 		}
@@ -128,7 +128,7 @@ func ResourceNames(pb proto.Message) []*auditv1.Resource {
 
 	if opts.Has(identifierTypeDescriptor) {
 		v := opts.Get(identifierTypeDescriptor)
-		id := v.Message().Interface().(*apiv1.Identifier)
+		id := v.Message().Interface().(*commonv1.Identifier)
 
 		names := make([]*auditv1.Resource, 0, len(id.Patterns))
 		for _, pattern := range id.Patterns {
@@ -141,7 +141,7 @@ func ResourceNames(pb proto.Message) []*auditv1.Resource {
 
 	if opts.Has(referenceTypeDescriptor) {
 		v := opts.Get(referenceTypeDescriptor)
-		ref := v.Message().Interface().(*apiv1.Reference)
+		ref := v.Message().Interface().(*commonv1.Reference)
 
 		// Best effort sizing to avoid reallocations.
 		names := make([]*auditv1.Resource, 0, len(ref.Fields))
@@ -169,7 +169,7 @@ func HydratedPatternForProto(pb proto.Message) (string, error) {
 
 	if opts.Has(identifierTypeDescriptor) {
 		v := opts.Get(identifierTypeDescriptor)
-		id := v.Message().Interface().(*apiv1.Identifier)
+		id := v.Message().Interface().(*commonv1.Identifier)
 
 		for _, pattern := range id.Patterns {
 			rs := resolvePattern(pb, pattern)
@@ -212,7 +212,7 @@ func ExtractPatternValuesFromString(pb proto.Message, value string) (map[string]
 
 	if opts.Has(identifierTypeDescriptor) {
 		v := opts.Get(identifierTypeDescriptor)
-		id := v.Message().Interface().(*apiv1.Identifier)
+		id := v.Message().Interface().(*commonv1.Identifier)
 
 		for _, pattern := range id.Patterns {
 			// The variable names on the pattern
@@ -251,7 +251,7 @@ func ExtractPatternValuesFromString(pb proto.Message, value string) (map[string]
 	return result, true, nil
 }
 
-func extractProtoPatternFieldNames(pattern *apiv1.Pattern) []string {
+func extractProtoPatternFieldNames(pattern *commonv1.Pattern) []string {
 	variableNames := fieldNameRegexp.FindAllStringSubmatch(pattern.Pattern, -1)
 	results := make([]string, 0, len(variableNames))
 	for _, name := range variableNames {
@@ -285,7 +285,7 @@ func resolveSlice(list protoreflect.List) []*auditv1.Resource {
 	return resources
 }
 
-func resolvePattern(pb proto.Message, pattern *apiv1.Pattern) *auditv1.Resource {
+func resolvePattern(pb proto.Message, pattern *commonv1.Pattern) *auditv1.Resource {
 	m := pb.ProtoReflect()
 	fields := m.Descriptor().Fields()
 
@@ -313,7 +313,7 @@ func APIBody(body interface{}) (*anypb.Any, error) {
 	}
 
 	if IsRedacted(m) {
-		return anypb.New(&apiv1.Redacted{RedactedTypeUrl: TypeURL(m)})
+		return anypb.New(&commonv1.Redacted{RedactedTypeUrl: TypeURL(m)})
 	}
 
 	// Deep copy before field redaction so we do not unintentionally remove fields

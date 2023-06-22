@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 
-	authnmodulev1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnmodulev1 "go.datalift.io/datalift/api/authn/v1"
 	authnv1 "go.datalift.io/datalift/server/config/service/authn/v1"
 	apimock "go.datalift.io/datalift/server/mock/api"
 	"go.datalift.io/datalift/server/mock/service/authnmock"
@@ -149,8 +149,8 @@ oidc:
 	assert.NotNil(t, createdToken)
 
 	// The token should have been recorded in the database.
-	assert.Len(t, mockStorage.Tokens[clutchProvider], 1)
-	assert.Equal(t, mockStorage.Tokens[clutchProvider]["service:some subject"], createdToken)
+	assert.Len(t, mockStorage.Tokens[provider], 1)
+	assert.Equal(t, mockStorage.Tokens[provider]["service:some subject"], createdToken)
 
 	claims, err := p.Verify(ctx, createdToken.AccessToken)
 	assert.NoError(t, err)
@@ -165,8 +165,8 @@ oidc:
 	assert.NotNil(t, createdToken)
 
 	// The token should have been recorded in the database.
-	assert.Len(t, mockStorage.Tokens[clutchProvider], 1)
-	assert.Equal(t, mockStorage.Tokens[clutchProvider]["service:some subject"], createdToken)
+	assert.Len(t, mockStorage.Tokens[provider], 1)
+	assert.Equal(t, mockStorage.Tokens[provider]["service:some subject"], createdToken)
 
 	claims, err = p.Verify(ctx, createdToken.AccessToken)
 	assert.NoError(t, err)
@@ -298,7 +298,7 @@ oidc:
 	assert.NotNil(t, providerToken)
 
 	// Check the store to make sure we recorded the clutch issued token.
-	clutchToken, err := mockStorage.Read(context.Background(), "user@example.com", clutchProvider)
+	clutchToken, err := mockStorage.Read(context.Background(), "user@example.com", provider)
 	assert.NoError(t, err)
 	assert.NotNil(t, clutchToken)
 
@@ -316,7 +316,7 @@ oidc:
 
 	// Revoke all the tokens for clutch, leaving the provider token. This verifies that we explicitly
 	// check for the existence of the clutch issued token in the database.
-	delete(mockStorage.Tokens, clutchProvider)
+	delete(mockStorage.Tokens, provider)
 
 	// Verification should now fail.
 	c, err = p.Verify(context.Background(), token.AccessToken)
@@ -406,9 +406,9 @@ oidc:
 			}
 
 			if tc.storedTokenDontMatch {
-				assert.NoError(t, mockStorage.Store(ctx, email, clutchProvider, &oauth2.Token{AccessToken: "AAAA", RefreshToken: refreshToken + "BADTOKEN"}))
+				assert.NoError(t, mockStorage.Store(ctx, email, provider, &oauth2.Token{AccessToken: "AAAA", RefreshToken: refreshToken + "BADTOKEN"}))
 			} else {
-				assert.NoError(t, mockStorage.Store(ctx, email, clutchProvider, &oauth2.Token{AccessToken: "AAAA", RefreshToken: refreshToken}))
+				assert.NoError(t, mockStorage.Store(ctx, email, provider, &oauth2.Token{AccessToken: "AAAA", RefreshToken: refreshToken}))
 			}
 			assert.NoError(t, mockStorage.Store(ctx, email, "foo.example.com", providerToken))
 

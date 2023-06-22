@@ -1,13 +1,13 @@
 package meta
 
 import (
+	commonv1 "go.datalift.io/datalift/api/common/v1"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	apiv1 "go.datalift.io/datalift/server/api/api/v1"
 	modulemock "go.datalift.io/datalift/server/mock/module"
 	"go.datalift.io/datalift/server/module/assets"
 	"go.datalift.io/datalift/server/module/healthcheck"
@@ -28,13 +28,13 @@ func TestGetAction(t *testing.T) {
 	assert.NoError(t, err)
 
 	action := GetAction("/datalift.healthcheck.v1.HealthcheckAPI/Healthcheck")
-	assert.Equal(t, apiv1.ActionType_READ, action)
+	assert.Equal(t, commonv1.ActionType_READ, action)
 
 	action = GetAction("/grpc.health.v1.Health/Check")
-	assert.Equal(t, apiv1.ActionType_UNSPECIFIED, action)
+	assert.Equal(t, commonv1.ActionType_UNSPECIFIED, action)
 
 	action = GetAction("/nonexistent/doesnotexist")
-	assert.Equal(t, apiv1.ActionType_UNSPECIFIED, action)
+	assert.Equal(t, commonv1.ActionType_UNSPECIFIED, action)
 }
 
 func TestAuditDisabled(t *testing.T) {
@@ -64,27 +64,27 @@ func TestExtractProtoPatternFieldNames(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		id      string
-		pattern *apiv1.Pattern
+		pattern *commonv1.Pattern
 		expect  []string
 	}{
 		{
 			id:      "3 fields",
-			pattern: &apiv1.Pattern{Pattern: "{name}/{of}/{fields}"},
+			pattern: &commonv1.Pattern{Pattern: "{name}/{of}/{fields}"},
 			expect:  []string{"name", "of", "fields"},
 		},
 		{
 			id:      "2 fields",
-			pattern: &apiv1.Pattern{Pattern: "{name}/{of}"},
+			pattern: &commonv1.Pattern{Pattern: "{name}/{of}"},
 			expect:  []string{"name", "of"},
 		},
 		{
 			id:      "1 fields",
-			pattern: &apiv1.Pattern{Pattern: "{name}"},
+			pattern: &commonv1.Pattern{Pattern: "{name}"},
 			expect:  []string{"name"},
 		},
 		{
 			id:      "different delimiters",
-			pattern: &apiv1.Pattern{Pattern: "{cat}/{meow}-{nom}_{food}--{tasty}"},
+			pattern: &commonv1.Pattern{Pattern: "{cat}/{meow}-{nom}_{food}--{tasty}"},
 			expect:  []string{"cat", "meow", "nom", "food", "tasty"},
 		},
 	}

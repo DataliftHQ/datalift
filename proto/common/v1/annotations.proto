@@ -1,9 +1,10 @@
 syntax = "proto3";
 
-package datalift.api.v1;
+package datalift.common.v1;
 
-import "api/v1/schema.proto";
 import "google/protobuf/descriptor.proto";
+
+import "common/v1/schema.proto";
 
 extend google.protobuf.MessageOptions {
   // Use a random high number that won't conflict with annotations from other

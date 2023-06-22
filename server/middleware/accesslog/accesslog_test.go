@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	healthcheckv1 "go.datalift.io/datalift/server/api/healthcheck/v1"
+	healthcheckv1 "go.datalift.io/datalift/api/healthcheck/v1"
 	accesslogv1 "go.datalift.io/datalift/server/config/middleware/accesslog/v1"
 )
 

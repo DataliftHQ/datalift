@@ -1,5 +1,6 @@
 import { createTheme, PaletteMode } from '@mui/material';
-import colors from 'assets/scss/_theme.module.scss';
+
+import colors from '../assets/scss/_theme.module.scss';
 
 const Palette = (paletteMode: PaletteMode) => {
   return createTheme({

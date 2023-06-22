@@ -1,6 +1,6 @@
-import { ErrorDetails as ErrorDetailsApi } from 'api/common/v1/error_pb';
 import type { AxiosError, AxiosResponse } from 'axios';
 
+import { ErrorDetails as ErrorDetailsApi } from '../api/common/v1/error_pb';
 import { HttpStatus } from './client.ts';
 import { grpcCodeToText } from './grpc.ts';
 

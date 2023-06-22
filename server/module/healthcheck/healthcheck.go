@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/anypb"
 
-	healthcheckv1 "go.datalift.io/datalift/server/api/healthcheck/v1"
+	healthcheckv1 "go.datalift.io/datalift/api/healthcheck/v1"
 	"go.datalift.io/datalift/server/module"
 )
 

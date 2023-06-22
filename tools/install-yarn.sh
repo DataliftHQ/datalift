@@ -2,14 +2,14 @@
 set -euo pipefail
 
 YARN_VERSION="1.22.19"
-ROOT_DEST_DIR="$PWD/frontend"
+ROOT_DEST_DIR="$PWD/ui"
 DEST_DIR="$ROOT_DEST_DIR/.yarn/releases"
 DEST_FILE="${DEST_DIR}/yarn-${YARN_VERSION}.cjs"
 WRAPPER_DEST_DIR="${PWD}/build/bin/"
 WRAPPER_DEST_FILE="${WRAPPER_DEST_DIR}/yarn.sh"
 
 if [[ ! -d "${ROOT_DEST_DIR}" ]]; then
-  echo "Could not find frontend directory. Ensure you're running this script from the root of your project."
+  echo "Could not find ui directory. Ensure you're running this script from the root of your project."
   exit 1
 fi
 

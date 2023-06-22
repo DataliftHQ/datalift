@@ -22,7 +22,7 @@ ensure_binary() {
     case "${OSTYPE}" in
       "darwin"*) os_type="darwin"; sum="${OSX_RELEASE_SUM}" ;;
       "linux"*) os_type="linux"; sum="${LINUX_RELEASE_SUM}" ;;
-      *) echo "error: Unsupported OS '${OSTYPE}' for shellcheck install, please install manually" && exit 1 ;;
+      *) echo "error: Unsupported OS '${OSTYPE}' for ${NAME} install, please install manually" && exit 1 ;;
     esac
 
     release_archive="/tmp/${NAME}-${RELEASE}"

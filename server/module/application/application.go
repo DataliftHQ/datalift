@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"github.com/uber-go/tally/v4"
-	applicationv1 "go.datalift.io/datalift/server/api/application/v1"
+	applicationv1 "go.datalift.io/datalift/api/application/v1"
 	"go.datalift.io/datalift/server/module"
 	"go.datalift.io/datalift/server/service"
 	"go.datalift.io/datalift/server/service/application"
+	"go.datalift.io/datalift/server/service/authn"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -77,7 +78,12 @@ func (m *mod) GetApplication(ctx context.Context, req *applicationv1.GetApplicat
 }
 
 func (m *mod) ListApplications(ctx context.Context, req *applicationv1.ListApplicationsRequest) (*applicationv1.ListApplicationsResponse, error) {
-	m.logger.Info("ListApplications")
+	subject := "Anonymous User" // Used if auth is disabled or it's the actual anonymous user.
+	if claims, err := authn.ClaimsFromContext(ctx); err == nil && claims.Subject != authn.AnonymousSubject {
+		subject = claims.Subject
+	}
+
+	m.logger.Info("ListApplications - " + subject)
 	return nil, nil
 }
 

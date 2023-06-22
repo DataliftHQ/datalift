@@ -15,7 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	authnv1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnv1 "go.datalift.io/datalift/api/authn/v1"
 	"go.datalift.io/datalift/server/gateway/meta"
 	"go.datalift.io/datalift/server/mock/grpcmock"
 	"go.datalift.io/datalift/server/mock/service/authnmock"

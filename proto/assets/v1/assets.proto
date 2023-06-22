@@ -3,7 +3,8 @@ syntax = "proto3";
 package datalift.assets.v1;
 
 import "google/api/annotations.proto";
-import "api/v1/annotations.proto";
+
+import "common/v1/annotations.proto";
 
 service AssetsAPI {
   // Fetch is a simple endpoint that is used to execute middleware (e.g. authentication) before serving an asset.
@@ -11,7 +12,7 @@ service AssetsAPI {
     option (google.api.http) = {
       get : "/v1/assets/fetch"
     };
-    option (datalift.api.v1.action).type = READ;
+    option (datalift.common.v1.action).type = READ;
   }
 }
 

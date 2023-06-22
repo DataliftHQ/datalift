@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	authnmodulev1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnmodulev1 "go.datalift.io/datalift/api/authn/v1"
 	authnv1 "go.datalift.io/datalift/server/config/service/authn/v1"
 )
 
@@ -24,7 +24,7 @@ import (
 // Compatible with Okta offline access, a holdover from previous defaults.
 var defaultScopes = []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "email"}
 
-const clutchProvider = "clutch"
+const provider = "datalift"
 
 type OIDCProvider struct {
 	provider *oidc.Provider
@@ -43,7 +43,7 @@ type OIDCProvider struct {
 	enableServiceTokenCreation bool
 }
 
-// Clutch's state token claims used during the exchange.
+// State token claims used during the exchange.
 type stateClaims struct {
 	*jwt.StandardClaims
 	RedirectURL string `json:"redirect"`
@@ -164,7 +164,7 @@ func (p *OIDCProvider) CreateToken(ctx context.Context, subject string, tokenTyp
 		StandardClaims: &jwt.StandardClaims{
 			ExpiresAt: expiresAt,
 			IssuedAt:  issuedAt.Unix(),
-			Issuer:    clutchProvider,
+			Issuer:    provider,
 			Subject:   prefixedSubject,
 		},
 	}
@@ -184,7 +184,7 @@ func (p *OIDCProvider) RefreshToken(ctx context.Context, t *oauth2.Token) (*oaut
 	}
 
 	// Look up refresh token and verify it matches the one stored in the database.
-	rt, err := p.tokenStorage.Read(ctx, claims.Subject, clutchProvider)
+	rt, err := p.tokenStorage.Read(ctx, claims.Subject, provider)
 	if err != nil {
 		return nil, err
 	}
@@ -267,7 +267,7 @@ func (p *OIDCProvider) issueAndStoreToken(ctx context.Context, claims *Claims, r
 			t.RefreshToken = refreshToken
 		}
 
-		if err := p.tokenStorage.Store(ctx, claims.Subject, clutchProvider, t); err != nil {
+		if err := p.tokenStorage.Store(ctx, claims.Subject, provider, t); err != nil {
 			return nil, err
 		}
 	}
@@ -277,7 +277,7 @@ func (p *OIDCProvider) issueAndStoreToken(ctx context.Context, claims *Claims, r
 
 type ClaimsFromOIDCTokenFunc func(ctx context.Context, t *oidc.IDToken) (*Claims, error)
 
-// Extract claims from an OIDC token and return Clutch's standard claims object. This could be configurable at a later
+// Extract claims from an OIDC token and return standard claims object. This could be configurable at a later
 // date to support subjects with IDs other than email (e.g. GitHub ID).
 func DefaultClaimsFromOIDCToken(ctx context.Context, t *oidc.IDToken) (*Claims, error) {
 	idc := &idClaims{}
@@ -314,7 +314,7 @@ func (p *OIDCProvider) Verify(ctx context.Context, rawToken string) (*Claims, er
 	// TODO(perf): Cache the lookup result in-memory for min(60, timeToExpiry) to prevent
 	// hitting the DB on each request. This should also cache whether we didn't find a token.
 	if p.tokenStorage != nil {
-		_, err := p.tokenStorage.Read(ctx, claims.Subject, clutchProvider)
+		_, err := p.tokenStorage.Read(ctx, claims.Subject, provider)
 		if err != nil {
 			return nil, err
 		}

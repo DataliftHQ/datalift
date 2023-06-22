@@ -10,8 +10,8 @@ const Dashboard: React.FC = () => {
       <div>
         {error ? (
           <span>
-            We're having issues loading your home page. You may see a different home page in the meantime as we resolve
-            this issue.
+            We&apos;re having issues loading your home page. You may see a different home page in the meantime as we
+            resolve this issue.
           </span>
         ) : (
           <Grid item xs={12} zeroMinWidth>

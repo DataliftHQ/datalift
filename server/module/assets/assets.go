@@ -7,7 +7,7 @@ import (
 	"github.com/uber-go/tally/v4"
 	"go.uber.org/zap"
 
-	assetsv1 "go.datalift.io/datalift/server/api/assets/v1"
+	assetsv1 "go.datalift.io/datalift/api/assets/v1"
 	"go.datalift.io/datalift/server/module"
 )
 

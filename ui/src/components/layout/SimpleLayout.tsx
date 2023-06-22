@@ -1,7 +1,8 @@
 import { styled } from '@mui/material';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import Logo from 'components/ui/Logo';
+import Logo from '../ui/Logo';
 
 const StyledHeader = styled('header')(({ theme }) => ({
   top: 0,

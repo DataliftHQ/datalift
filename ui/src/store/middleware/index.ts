@@ -1,7 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 
+import { RootState } from '../../store';
 import { setThemeMode } from '../slices/user';
-import { RootState } from 'store';
 
 export const listenerMiddleware = createListenerMiddleware();
 

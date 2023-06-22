@@ -1,5 +1,6 @@
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { AppBar, Avatar, Box, Toolbar } from '@mui/material';
+import React from 'react';
 
 import LogoSection from './LogoSection';
 import NotificationSection from './NotificationSection';

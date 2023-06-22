@@ -24,5 +24,6 @@ go.work
 build
 .air
 attic
+node_modules
 
 backend/cmd/assets/generated_assets.go

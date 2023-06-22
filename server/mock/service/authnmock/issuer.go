@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/oauth2"
 
-	authnv1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnv1 "go.datalift.io/datalift/api/authn/v1"
 )
 
 type MockIssuer struct {

@@ -1,4 +1,4 @@
-import { GetApplicationRequest, GetApplicationResponse } from 'api/application/v1/application_pb';
+import { GetApplicationRequest, GetApplicationResponse } from '../api/application/v1/application_pb';
 import client from './client.ts';
 
 export class ApplicationService {

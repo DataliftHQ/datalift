@@ -1,11 +1,12 @@
+import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import NavigationScroll from 'components/ui/NavigationScroll';
-import Routes from 'routes';
-import Snackbar from 'components/extended/Snackbar';
-import Store from 'store';
-import Theme from 'theme';
+import Snackbar from './components/extended/Snackbar';
+import NavigationScroll from './components/ui/NavigationScroll';
+import Routes from './routes';
+import Store from './store';
+import Theme from './theme';
 
 function App() {
   return (

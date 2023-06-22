@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/anypb"
 
-	authnv1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnv1 "go.datalift.io/datalift/api/authn/v1"
 	"go.datalift.io/datalift/server/gateway/log"
 	"go.datalift.io/datalift/server/gateway/mux"
 	"go.datalift.io/datalift/server/module"

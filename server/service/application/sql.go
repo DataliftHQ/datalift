@@ -2,7 +2,7 @@ package application
 
 import (
 	"context"
-	applicationv1 "go.datalift.io/datalift/server/api/application/v1"
+	applicationv1 "go.datalift.io/datalift/api/application/v1"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"

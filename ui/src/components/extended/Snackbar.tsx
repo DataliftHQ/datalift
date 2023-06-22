@@ -1,10 +1,10 @@
-import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Button, Fade, Grow, IconButton, Slide, SlideProps } from '@mui/material';
 import MuiSnackbar from '@mui/material/Snackbar';
+import React from 'react';
 
-import { useAppDispatch, useAppSelector } from 'hooks/state';
-import * as snackbar from 'store/slices/snackbar';
+import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import * as snackbar from '../../store/slices/snackbar';
 
 const TransitionSlideLeft = (props: SlideProps) => {
   return <Slide {...props} direction='left' />;

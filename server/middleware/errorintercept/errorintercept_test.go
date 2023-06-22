@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 
-	healthcheckv1 "go.datalift.io/datalift/server/api/healthcheck/v1"
+	healthcheckv1 "go.datalift.io/datalift/api/healthcheck/v1"
 )
 
 func TestNew(t *testing.T) {

@@ -1,4 +1,5 @@
 import { styled } from '@mui/material';
+import React from 'react';
 
 const StyledSvg = styled('svg')({
   height: '40px',

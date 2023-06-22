@@ -9,9 +9,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { TypographyOptions } from '@mui/material/styles/createTypography';
-import { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 
-import { useAppSelector } from 'hooks/state';
+import { useAppSelector } from '../hooks/state';
 import ComponentStyleOverrides from './compStyleOverride';
 import Palette from './palette';
 import Typography from './typography';

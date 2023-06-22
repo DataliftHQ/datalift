@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/uber-go/tally/v4"
-	applicationv1 "go.datalift.io/datalift/server/api/application/v1"
+	applicationv1 "go.datalift.io/datalift/api/application/v1"
 	"go.datalift.io/datalift/server/service"
 	pgservice "go.datalift.io/datalift/server/service/db/postgres"
 	"go.uber.org/zap"

@@ -78,7 +78,7 @@ worker() {
   fi
 }
 
-frontend() {
+web() {
   if ! command -v node -v &> /dev/null; then
     echo "nodejs is not installed or cannot be found in the current PATH, this is a required dependency."
     did_checks_pass=false
@@ -112,8 +112,8 @@ main() {
   if [ $# -ge 1 ] && [ -n "$1" ]; then
     if [ "$1" == "server" ]; then
       server
-    elif [ "$1" == "frontend" ]; then
-      frontend
+    elif [ "$1" == "web" ]; then
+      web
     elif [ "$1" == "worker" ]; then
       worker
     fi

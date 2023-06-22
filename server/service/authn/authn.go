@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 	"google.golang.org/protobuf/types/known/anypb"
 
-	authnmodulev1 "go.datalift.io/datalift/server/api/authn/v1"
+	authnmodulev1 "go.datalift.io/datalift/api/authn/v1"
 	authnv1 "go.datalift.io/datalift/server/config/service/authn/v1"
 	"go.datalift.io/datalift/server/service"
 )

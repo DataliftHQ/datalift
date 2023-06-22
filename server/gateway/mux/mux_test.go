@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	healthcheckv1 "go.datalift.io/datalift/server/api/healthcheck/v1"
+	healthcheckv1 "go.datalift.io/datalift/api/healthcheck/v1"
 	gatewayv1 "go.datalift.io/datalift/server/config/gateway/v1"
 )
 
@@ -215,7 +215,7 @@ func TestCustomResponseForwarderLocationStatusOverrideAndRefreshToken(t *testing
 	assert.NoError(t, err)
 	assert.Equal(t, 304, rec.Code)
 	assert.Contains(t, rec.Header().Values("Set-Cookie"), "token=myToken; Path=/; Secure")
-	assert.Contains(t, rec.Header().Values("Set-Cookie"), "refreshToken=myRefreshToken; Path=/v1/authn/login; HttpOnly; Secure")
+	assert.Contains(t, rec.Header().Values("Set-Cookie"), "refreshToken=myRefreshToken; Path=/auth/login; HttpOnly; Secure")
 	assert.Equal(t, "https://example.com", rec.Header().Get("Location"))
 }
 

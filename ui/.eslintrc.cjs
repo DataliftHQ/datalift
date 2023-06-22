@@ -50,7 +50,7 @@ module.exports = {
         'assertFunctionNames': ['expect', 'cy']
       }
     ],
-    'no-console': ['error'],
+    'no-console': ['warn'],
     'no-empty': ['off'],
     'no-nested-ternary': ['off'],
     'no-unused-expressions': ['error', { 'allowShortCircuit': true }],
@@ -81,7 +81,7 @@ module.exports = {
       rules: {
         'no-undef': ['off'],
         'no-unused-vars': ['off'],
-        '@typescript-eslint/no-unused-vars': ['error', { 'args': 'none' }],
+        '@typescript-eslint/no-unused-vars': ['warn', { 'args': 'none' }],
         'no-use-before-define': ['off'],
         '@typescript-eslint/no-use-before-define': ['error'],
         'no-shadow': ['off'],

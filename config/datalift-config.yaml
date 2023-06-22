@@ -43,6 +43,10 @@ services:
         user: datalift
         password: datalift
         ssl_mode: DISABLE
+  - name: datalift.service.authn.storage
+    typed_config:
+      "@type": types.google.com/datalift.config.service.authn.v1.StorageConfig
+      encryption_passphrase: ${DATALIFT_AUTHN_STORAGE_ENCRYPTION_PASSPHRASE}
   - name: datalift.service.authn
     typed_config:
       "@type": types.google.com/datalift.config.service.authn.v1.Config
@@ -51,7 +55,6 @@ services:
         client_id: ${DATALIFT_AUTHN_CLIENT_ID}
         client_secret: ${DATALIFT_AUTHN_CLIENT_SECRET}
         redirect_url: "http://localhost:8080/auth/callback"
-        subject_claim_name_override: name
         scopes:
           - openid
           - profile

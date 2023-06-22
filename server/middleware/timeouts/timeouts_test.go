@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	healthcheckv1 "go.datalift.io/datalift/server/api/healthcheck/v1"
+	healthcheckv1 "go.datalift.io/datalift/api/healthcheck/v1"
 	gatewayv1 "go.datalift.io/datalift/server/config/gateway/v1"
 )
 

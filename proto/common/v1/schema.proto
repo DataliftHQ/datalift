@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package datalift.api.v1;
+package datalift.common.v1;
 
 enum ActionType {
   UNSPECIFIED = 0;
