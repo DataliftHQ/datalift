@@ -1,4 +1,4 @@
-name: backend
+name: server
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
       - master
     paths:
       - 'server/**'
-      - .github/workflows/server.yml
+      - .github/workflows/server.yaml
       - tools/golangci-lint.sh
       - Makefile
 jobs:
