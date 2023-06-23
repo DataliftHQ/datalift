@@ -54,7 +54,9 @@ server-dev-mock:
 
 .PHONY: server-lint # Lint the server code.
 server-lint: preflight-checks-server
-	find . -type f -name go.mod -maxdepth 3 -execdir ../tools/golangci-lint.sh run --timeout 2m30s \;
+	cd client && ../tools/golangci-lint.sh run --timeout 2m30s
+	cd server && ../tools/golangci-lint.sh run --timeout 2m30s
+	cd worker && ../tools/golangci-lint.sh run --timeout 2m30s
 
 .PHONY: server-lint-fix # Lint and fix the server code.
 server-lint-fix:
