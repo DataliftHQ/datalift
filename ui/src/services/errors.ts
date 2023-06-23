@@ -284,14 +284,12 @@ const grpcResponseToError = (clientError: AxiosError): DataliftError => {
   return error;
 };
 
-/* eslint-disable no-underscore-dangle */
 const isHelpDetails = (details: ErrorDetails): details is Help => {
   return details._type === 'types.googleapis.com/google.rpc.Help';
 };
 
 const isDataliftErrorDetails = (details: ErrorDetails): details is ErrorDetails => {
-  return details._type === 'type.googleapis.com/datalift.api.v1.ErrorDetails';
+  return details._type === 'type.googleapis.com/datalift.common.v1.ErrorDetails';
 };
-/* eslint-enable */
 
 export { grpcResponseToError, isDataliftErrorDetails, isHelpDetails };
