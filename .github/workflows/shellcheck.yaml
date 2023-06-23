@@ -3,9 +3,8 @@ on:
   push:
     branches:
     - master
+    - develop
   pull_request:
-    branches:
-    - master
     paths:
     - '**.sh'
     - .github/workflows/shellcheck.yaml
