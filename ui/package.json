@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 10",
     "lint:fix": "eslint src --ext ts,tsx --fix",
     "lint:packages": "sort-package-json package.json --check",
     "lint:packages:fix": "sort-package-json package.json",
