@@ -47,7 +47,7 @@ jobs:
           key: ${{ runner.os }}-fe-build-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: yarn --cwd web install
+        run: yarn --cwd ui install
       - name: build
         run: make web
   lint:
@@ -70,7 +70,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: yarn --cwd web install
+        run: yarn --cwd ui install
       - name: Compile
         run: make web
       - name: Lint
