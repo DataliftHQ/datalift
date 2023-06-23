@@ -41,7 +41,7 @@ server: preflight-checks-server
 	cd server && go build -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
 .PHONY: server-with-assets # Build the server with web assets.
-server-with-assets: preflight-checks-server web
+server-with-assets: preflight-checks-server
 	cd server && go run cmd/assets/generate.go ../ui/build && go build -tags withAssets -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
 .PHONY: server-dev # Start the server in development mode.

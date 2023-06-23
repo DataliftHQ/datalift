@@ -55,12 +55,31 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Run GoReleaser
-#        uses: goreleaser/goreleaser-action@v4
-#        env:
-#          COSIGN_PWD: ${{ secrets.COSIGN_PWD }}
-#          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-#        with:
-#          distribution: goreleaser
-#          version: latest
-#          args: release --clean
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          check-latest: true
+      - name: Enforce consistent Yarn version
+        run: ./tools/install-yarn.sh
+      - name: node_modules cache
+        id: node-modules-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn --cwd ui install
+      - name: Compile
+        run: make web
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        env:
+          COSIGN_PWD: ${{ secrets.COSIGN_PWD }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean

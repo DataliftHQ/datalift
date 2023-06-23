@@ -10,19 +10,19 @@
 build/
 
 # backend
-backend/.air/
-backend/cmd/assets/generated_assets.go
+server/.air/
+server/cmd/assets/generated_assets.go
 
 # frontend
 **/node_modules/
-frontend/**/*.tsbuildinfo
-frontend/**/.eslintcache
-frontend/**/build/
-frontend/**/dist/
-frontend/**/screenshots
-frontend/*-debug.log
-frontend/.yarn
-frontend/coverage
+ui/**/*.tsbuildinfo
+ui/**/.eslintcache
+ui/**/build/
+ui/**/dist/
+ui/**/screenshots
+ui/*-debug.log
+ui/.yarn
+ui/coverage
 
 # docs
 docs/

@@ -1,0 +1,233 @@
+snapshot:
+  name_template: "{{ incpatch .Version }}-dev"
+
+report_sizes: true
+
+builds:
+  - id: "datalift"
+    binary: "datalift"
+    dir: server
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    hooks:
+      pre:
+        - cmd: go run cmd/assets/generate.go ../ui/build
+          dir: server
+          output: true
+    flags:
+      - -tags=withAssets -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+  - id: "datalift-worker"
+    binary: "datalift-worker"
+    dir: worker
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^test:"
+      - "^chore"
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+      - go mod tidy
+  groups:
+    - title: Dependency updates
+      regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+      order: 300
+    - title: "New Features"
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 100
+    - title: "Security updates"
+      regexp: '^.*?sec(\([[:word:]]+\))??!?:.+$'
+      order: 150
+    - title: "Bug fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 200
+    - title: "Documentation updates"
+      regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: "Build process updates"
+      regexp: ^.*?build(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: Other work
+      order: 9999
+
+archives:
+  - name_template: >-
+      {{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_
+      {{- if eq .Arch "386" }}i386
+      {{- else if and (eq .Os "darwin" ) (eq .Arch "all") }}ubin
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    builds_info:
+      group: root
+      owner: root
+    files:
+      - README.md
+      - LICENSE
+      - src: config/datalift-config.yaml
+        dst: datalift-config.yaml
+
+dockers:
+  - image_templates:
+      - "datalifthq/datalift:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+    dockerfile: server/Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+      - "--label=io.artifacthub.package.license=MPL-2.0"
+      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+    extra_files:
+      - api/
+      - config/datalift-config.yaml
+      - ui/
+      - server/
+      - tools/preflight-checks.sh
+      - tools/install-yarn.sh
+      - Makefile
+  - image_templates:
+      - "datalifthq/datalift:{{ .Tag }}-arm64"
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+    dockerfile: server/Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+      - "--label=io.artifacthub.package.license=MPL-2.0"
+      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
+    extra_files:
+      - api/
+      - config/datalift-config.yaml
+      - ui/
+      - server/
+      - tools/preflight-checks.sh
+      - tools/install-yarn.sh
+      - Makefile
+  - image_templates:
+      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+    dockerfile: worker/Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+      - "--label=io.artifacthub.package.license=MPL-2.0"
+      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+    extra_files:
+      - tools/preflight-checks.sh
+      - Makefile
+  - image_templates:
+      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
+    dockerfile: worker/Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+      - "--label=io.artifacthub.package.license=MPL-2.0"
+      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
+    extra_files:
+      - tools/preflight-checks.sh
+      - Makefile
+
+docker_manifests:
+  - name_template: "datalifthq/datalift:{{ .Tag }}"
+    image_templates:
+      - "datalifthq/datalift:{{ .Tag }}-amd64"
+      - "datalifthq/datalift:{{ .Tag }}-arm64"
+  - name_template: "datalifthq/datalift:latest"
+    image_templates:
+      - "datalifthq/datalift:{{ .Tag }}-amd64"
+      - "datalifthq/datalift:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/datalifthq/datalift:latest"
+    image_templates:
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+  - name_template: "datalifthq/datalift-worker:{{ .Tag }}"
+    image_templates:
+      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+  - name_template: "datalifthq/datalift-worker:latest"
+    image_templates:
+      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/datalifthq/datalift-worker:latest"
+    image_templates:
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
