@@ -72,7 +72,7 @@ server-verify:
 
 .PHONY: server-config-validation
 server-config-validation:
-	cd server && go run main.go -validate -c datalift-config.yaml
+	cd server && go run main.go -validate -c ../config/datalift-config.yaml
 
 .PHONY: preflight-checks-server
 preflight-checks-server:
