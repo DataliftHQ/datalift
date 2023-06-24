@@ -177,6 +177,7 @@ dockers:
       - "--platform=linux/amd64"
     extra_files:
       - tools/preflight-checks.sh
+      - worker/
       - Makefile
   - image_templates:
       - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
