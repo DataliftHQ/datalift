@@ -1,28 +1,27 @@
-# Frontend build
+# Web build
 FROM node:18-buster as nodebuild
 
 WORKDIR /app
 
-COPY ../frontend ./frontend
+COPY ../ui ./ui
 COPY ../tools/install-yarn.sh ./tools/install-yarn.sh
 COPY ../tools/preflight-checks.sh ./tools/preflight-checks.sh
 COPY ../Makefile .
 
-RUN make frontend
+RUN make web
 
-# Backend build
+# Server build
 FROM golang:1.20-buster as gobuild
-
-ENV GOPRIVATE=gitlab.com/datalift/*
 
 WORKDIR /app
 
-COPY ./backend ./backend
+COPY ./api ./api
+COPY ./server ./server
 COPY ../tools/preflight-checks.sh ./tools/preflight-checks.sh
 COPY ../Makefile .
-COPY --from=nodebuild /app/frontend/build ./frontend/build
+COPY --from=nodebuild /app/ui/build ./ui/build
 
-RUN make backend-with-assets
+RUN make server-with-assets
 
 # Copy binary to final image
 FROM gcr.io/distroless/base-debian11
@@ -30,7 +29,7 @@ FROM gcr.io/distroless/base-debian11
 WORKDIR /app
 
 COPY --from=gobuild /app/build/server /app
-COPY ./backend/datalift-config.yaml /app
+COPY ./config/datalift-config.yaml /app
 
 EXPOSE 8080
 CMD ["/app/server"]

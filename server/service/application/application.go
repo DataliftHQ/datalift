@@ -16,10 +16,9 @@ import (
 const Name = "datalift.service.application"
 
 type svc struct {
-	logger           *zap.Logger
-	scope            tally.Scope
-	db               *sql.DB
-	advisoryLockConn *sql.Conn
+	logger *zap.Logger
+	scope  tally.Scope
+	db     *sql.DB
 }
 
 type Service interface {
@@ -70,7 +69,7 @@ func (s *svc) GetApplication(ctx context.Context, id string) (*applicationv1.App
 		return nil, err
 	}
 	if len(applications) == 0 {
-		return nil, fmt.Errorf("cannot find application by id: %d", id)
+		return nil, fmt.Errorf("cannot find application by id: %s", id)
 	}
 	return applications[0], nil
 }

@@ -196,6 +196,7 @@ dockers:
       - "--platform=linux/arm64"
     extra_files:
       - tools/preflight-checks.sh
+      - worker/
       - Makefile
 
 docker_manifests:
