@@ -65,7 +65,6 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          - linux/arm/v7
           - linux/arm64
     steps:
       - name: Checkout
@@ -75,8 +74,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            datalfthq/datalift
             ghcr.io/datalfthq/datalift
+            datalfthq/datalift
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
