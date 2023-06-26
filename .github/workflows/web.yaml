@@ -73,7 +73,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: yarn --cwd ui install
+        run: yarn --cwd web install
       - name: Compile
         run: make web
       - name: Lint
