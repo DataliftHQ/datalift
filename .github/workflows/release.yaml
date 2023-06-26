@@ -73,9 +73,10 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: |
-            ghcr.io/datalfthq/datalift
-            datalfthq/datalift
+          images: datalfthq/datalift
+#          images: |
+#            ghcr.io/datalfthq/datalift
+#            datalfthq/datalift
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
