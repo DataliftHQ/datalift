@@ -69,6 +69,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
+          - linux/arm
           - linux/arm64
     steps:
       - name: Checkout
