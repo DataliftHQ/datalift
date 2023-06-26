@@ -3,18 +3,18 @@ SHELL:=/usr/bin/env bash
 
 MAKEFLAGS += --no-print-directory
 
-DOCS_DEPLOY_USE_SSH ?= true
-DOCS_DEPLOY_GIT_USER ?= git
-
 # To update the version, update VERSION variable:
 # Naming convention:
 #   Stable releases:   "1.0.0"
 #   Pre-releases:      "1.0.0-alpha.1", "1.0.0-beta.2", "1.0.0-rc.3"
 #   Master/dev branch: "1.0.0-dev"
-VERSION := 0.0.0-dev
+VERSION ?= 0.0.0-dev
 
-YARN:=./build/bin/yarn.sh
-PROJECT_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+GIT_COMMIT ?= $(shell git rev-parse HEAD)
+GIT_COMMIT_DATE ?= $(shell git show -s --format=%cd --date=iso-strict HEAD)
+
+YARN := ./build/bin/yarn.sh
+PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: help # Print this help message.
  help:
@@ -80,36 +80,36 @@ preflight-checks-server:
 
 .PHONY: web # Build production web assets.
 web: yarn-ensure preflight-checks-web yarn-install
-	$(YARN) --cwd ui build
+	$(YARN) --cwd web build
 
 .PHONY: web-dev-build # Build development web assets.
 web-dev-build: yarn-install
-	$(YARN) --cwd ui preview
+	$(YARN) --cwd web preview
 
 .PHONY: web-dev # Start the web in development mode.
 web-dev: yarn-install
-	$(YARN) --cwd ui dev
+	$(YARN) --cwd web dev
 
 .PHONY: web-lint # Lint the web code.
 web-lint: yarn-ensure
-	$(YARN) --cwd ui lint
+	$(YARN) --cwd web lint
 
 .PHONY: web-lint-fix # Lint and fix the web code.
 web-lint-fix: yarn-ensure
-	$(YARN) --cwd ui lint:fix
+	$(YARN) --cwd web lint:fix
 
 .PHONY: web-test # Run unit tests for the web code.
 web-test: yarn-ensure
-	$(YARN) --cwd ui test
+	$(YARN) --cwd web test
 
 # TODO: FIX ME
 .PHONY: web-verify # Verify web packages are sorted.
 web-verify: yarn-ensure
-	$(YARN) --cwd ui lint:packages
+	$(YARN) --cwd web lint:packages
 
 .PHONY: yarn-install # Install web dependencies.
 yarn-install: yarn-ensure
-	$(YARN) --cwd ui install --frozen-lockfile
+	$(YARN) --cwd web install --frozen-lockfile
 
 .PHONY: yarn-ensure # Install the pinned version of yarn.
 yarn-ensure:
@@ -142,7 +142,7 @@ verify: proto-verify server-verify web-verify
 .PHONY: clean # Remove build and cache artifacts.
 clean:
 	rm -rf build
-	cd ui && rm -rf build node_modules .yarn
+	cd web && rm -rf build node_modules .yarn
 
 .PHONY: dev-k8s-up # Start a local k8s cluster.
 dev-k8s-up:
@@ -168,3 +168,10 @@ preflight-checks-worker:
 .PHONY: worker # Build the standalone worker.
 worker: preflight-checks-worker
 	cd worker && go build -o ../build/worker -ldflags="-X main.version=$(VERSION)"
+
+
+.PHONY: build
+build:
+	go build -o ./build/datalift -ldflags '-X "main.version=$(VERSION)" -X "main.commit=$(GIT_COMMIT)" -X "main.date=$(GIT_COMMIT_DATE)" -X "main.builtBy=makefile"'
+
+

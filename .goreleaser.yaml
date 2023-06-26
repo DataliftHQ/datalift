@@ -107,129 +107,129 @@ archives:
     files:
       - README.md
       - LICENSE
-      - src: config/datalift-config.yaml
-        dst: datalift-config.yaml
+      - src: config/datalift.yaml
+        dst: datalift.yaml
 
-dockers:
-  - image_templates:
-      - "datalifthq/datalift:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
-    dockerfile: server/Dockerfile
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
-      - "--label=io.artifacthub.package.license=MPL-2.0"
-      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    extra_files:
-      - api/
-      - config/datalift-config.yaml
-      - ui/
-      - server/
-      - tools/preflight-checks.sh
-      - tools/install-yarn.sh
-      - Makefile
-  - image_templates:
-      - "datalifthq/datalift:{{ .Tag }}-arm64"
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
-    dockerfile: server/Dockerfile
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
-      - "--label=io.artifacthub.package.license=MPL-2.0"
-      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
-    extra_files:
-      - api/
-      - config/datalift-config.yaml
-      - ui/
-      - server/
-      - tools/preflight-checks.sh
-      - tools/install-yarn.sh
-      - Makefile
-  - image_templates:
-      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
-    dockerfile: worker/Dockerfile
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
-      - "--label=io.artifacthub.package.license=MPL-2.0"
-      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    extra_files:
-      - tools/preflight-checks.sh
-      - worker/
-      - Makefile
-  - image_templates:
-      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
-    dockerfile: worker/Dockerfile
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
-      - "--label=io.artifacthub.package.license=MPL-2.0"
-      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
-    extra_files:
-      - tools/preflight-checks.sh
-      - worker/
-      - Makefile
-
-docker_manifests:
-  - name_template: "datalifthq/datalift:{{ .Tag }}"
-    image_templates:
-      - "datalifthq/datalift:{{ .Tag }}-amd64"
-      - "datalifthq/datalift:{{ .Tag }}-arm64"
-  - name_template: "datalifthq/datalift:latest"
-    image_templates:
-      - "datalifthq/datalift:{{ .Tag }}-amd64"
-      - "datalifthq/datalift:{{ .Tag }}-arm64"
-  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
-  - name_template: "ghcr.io/datalifthq/datalift:latest"
-    image_templates:
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
-  - name_template: "datalifthq/datalift-worker:{{ .Tag }}"
-    image_templates:
-      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
-      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
-  - name_template: "datalifthq/datalift-worker:latest"
-    image_templates:
-      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
-      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
-  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
-  - name_template: "ghcr.io/datalifthq/datalift-worker:latest"
-    image_templates:
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
-      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#dockers:
+#  - image_templates:
+#      - "datalifthq/datalift:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+#    dockerfile: server/Dockerfile
+#    use: buildx
+#    build_flag_templates:
+#      - "--pull"
+#      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+#      - "--label=io.artifacthub.package.license=MPL-2.0"
+#      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+#      - "--label=org.opencontainers.image.created={{.Date}}"
+#      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#      - "--label=org.opencontainers.image.version={{.Version}}"
+#      - "--label=org.opencontainers.image.source={{.GitURL}}"
+#      - "--platform=linux/amd64"
+#    extra_files:
+#      - api/
+#      - config/datalift-config.yaml
+#      - ui/
+#      - server/
+#      - tools/preflight-checks.sh
+#      - tools/install-yarn.sh
+#      - Makefile
+#  - image_templates:
+#      - "datalifthq/datalift:{{ .Tag }}-arm64"
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+#    dockerfile: server/Dockerfile
+#    use: buildx
+#    build_flag_templates:
+#      - "--pull"
+#      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+#      - "--label=io.artifacthub.package.license=MPL-2.0"
+#      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+#      - "--label=org.opencontainers.image.created={{.Date}}"
+#      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#      - "--label=org.opencontainers.image.version={{.Version}}"
+#      - "--label=org.opencontainers.image.source={{.GitURL}}"
+#      - "--platform=linux/arm64"
+#    extra_files:
+#      - api/
+#      - config/datalift-config.yaml
+#      - ui/
+#      - server/
+#      - tools/preflight-checks.sh
+#      - tools/install-yarn.sh
+#      - Makefile
+#  - image_templates:
+#      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#    dockerfile: worker/Dockerfile
+#    use: buildx
+#    build_flag_templates:
+#      - "--pull"
+#      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+#      - "--label=io.artifacthub.package.license=MPL-2.0"
+#      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+#      - "--label=org.opencontainers.image.created={{.Date}}"
+#      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#      - "--label=org.opencontainers.image.version={{.Version}}"
+#      - "--label=org.opencontainers.image.source={{.GitURL}}"
+#      - "--platform=linux/amd64"
+#    extra_files:
+#      - tools/preflight-checks.sh
+#      - worker/
+#      - Makefile
+#  - image_templates:
+#      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#    dockerfile: worker/Dockerfile
+#    use: buildx
+#    build_flag_templates:
+#      - "--pull"
+#      - '--label=io.artifacthub.package.maintainers=[{"name":"Datalift","email":"support@datalift.io"}]'
+#      - "--label=io.artifacthub.package.license=MPL-2.0"
+#      - "--label=org.opencontainers.image.description=Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily."
+#      - "--label=org.opencontainers.image.created={{.Date}}"
+#      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#      - "--label=org.opencontainers.image.version={{.Version}}"
+#      - "--label=org.opencontainers.image.source={{.GitURL}}"
+#      - "--platform=linux/arm64"
+#    extra_files:
+#      - tools/preflight-checks.sh
+#      - worker/
+#      - Makefile
+#
+#docker_manifests:
+#  - name_template: "datalifthq/datalift:{{ .Tag }}"
+#    image_templates:
+#      - "datalifthq/datalift:{{ .Tag }}-amd64"
+#      - "datalifthq/datalift:{{ .Tag }}-arm64"
+#  - name_template: "datalifthq/datalift:latest"
+#    image_templates:
+#      - "datalifthq/datalift:{{ .Tag }}-amd64"
+#      - "datalifthq/datalift:{{ .Tag }}-arm64"
+#  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
+#    image_templates:
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+#  - name_template: "ghcr.io/datalifthq/datalift:latest"
+#    image_templates:
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift:{{ .Tag }}-arm64"
+#  - name_template: "datalifthq/datalift-worker:{{ .Tag }}"
+#    image_templates:
+#      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#  - name_template: "datalifthq/datalift-worker:latest"
+#    image_templates:
+#      - "datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#      - "datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#  - name_template: "ghcr.io/datalifthq/datalift:{{ .Tag }}"
+#    image_templates:
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
+#  - name_template: "ghcr.io/datalifthq/datalift-worker:latest"
+#    image_templates:
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-amd64"
+#      - "ghcr.io/datalifthq/datalift-worker:{{ .Tag }}-arm64"
