@@ -109,7 +109,7 @@ web-verify: yarn-ensure
 
 .PHONY: yarn-install # Install web dependencies.
 yarn-install: yarn-ensure
-	$(YARN) --cwd web install --frozen-lockfile
+	$(YARN) --cwd web install --frozen-lockfile --network-timeout 150000
 
 .PHONY: yarn-ensure # Install the pinned version of yarn.
 yarn-ensure:
