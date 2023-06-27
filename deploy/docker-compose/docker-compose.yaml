@@ -1,18 +1,25 @@
 version: "3.8"
 services:
+
   postgres:
     container_name: postgresql
     image: postgres:15-alpine
     environment:
+      POSTGRES_DB: datalift
       POSTGRES_USER: datalift
       POSTGRES_PASSWORD: datalift
-      POSTGRES_DB: datalift
+    healthcheck:
+      test: pg_isready -U datalift -d datalift
+      interval: 10s
+      timeout: 3s
+      retries: 5
     networks:
       - datalift-network
     ports:
       - 5432:5432
     volumes:
       - /var/lib/postgresql/data
+
   temporal:
     container_name: temporal
     depends_on:
@@ -31,6 +38,7 @@ services:
       - 7233:7233
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+
   temporal-admin-tools:
     container_name: temporal-admin-tools
     depends_on:
@@ -42,6 +50,7 @@ services:
       - datalift-network
     stdin_open: true
     tty: true
+
   temporal-ui:
     container_name: temporal-ui
     depends_on:
@@ -53,7 +62,45 @@ services:
     networks:
       - datalift-network
     ports:
-      - 8888:8080
+      - 7070:8080
+
+  datalift-migrate:
+    container_name: datalift-migrate
+    image: datalifthq/datalift:latest
+    command:
+      [ "-path", "/database", "-database",  "postgres://databaseusername:databasepassword@databaseservicename:5432/database?sslmode=disable", "up" ]
+    networks:
+      - datalift-network
+    depends_on:
+      - postgres
+    restart: always
+
+  datalift-server:
+    container_name: datalift-server
+    image: datalifthq/datalift:latest
+    ports:
+      - 8080:8080
+    networks:
+      - datalift-network
+    depends_on:
+      - postgres
+      - datalift-migrate
+      - temporal
+    restart: always
+
+  datalift-worker:
+    container_name: datalift-worker
+    image: datalifthq/datalift:latest
+    command: /app/datalift worker -c xxx/worker.yaml
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - DATALIFT_ADDRESS=datalift-server:8080
+    networks:
+      - datalift-network
+    depends_on:
+      - temporal
+    restart: always
+
   https-proxy:
     container_name: https-proxy
     image: nginx:latest
@@ -68,18 +115,7 @@ services:
       - ./nginx/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
       - ./nginx/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
       - ./nginx/ssl-params.conf:/etc/nginx/ssl-params.conf
-  datalift-worker:
-    container_name: datalift-worker
-    build:
-      context: ../../
-      dockerfile: ./worker/Dockerfile
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-    networks:
-      - datalift-network
-    depends_on:
-      - temporal
-    restart: always
+
 networks:
   datalift-network:
     driver: bridge

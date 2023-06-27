@@ -22,6 +22,25 @@ func newServerCmd() *serverCmd {
 		Args:              cobra.NoArgs,
 		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
+
+			//package main
+			//
+			//import (
+			//	"go.datalift.io/datalift/internal/gateway"
+			//	"go.datalift.io/datalift/server/cmd/assets"
+			//)
+			//
+			////nolint:all
+			//var (
+			//	version = ""
+			//)
+			//
+			//func main() {
+			//	flags := gateway.ParseFlags()
+			//	components := gateway.CoreComponentFactory
+			//
+			//	gateway.Run(flags, components, assets.VirtualFS)
+			//}
 			fmt.Println("server")
 			return nil
 		},

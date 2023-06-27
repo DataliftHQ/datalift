@@ -18,8 +18,7 @@ WORKDIR /app
 COPY . .
 COPY --from=nodebuild /app/web/build ./web/build
 
-#RUN make server-with-assets
-RUN make build
+RUN make build-with-assets
 
 # Copy binary to final image
 FROM gcr.io/distroless/base-debian11
