@@ -1,20 +1,20 @@
-package cmd
+package server
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 )
 
-type serverCmd struct {
-	cmd  *cobra.Command
-	opts serverOpts
+type ServerCmd struct {
+	Cmd  *cobra.Command
+	Opts serverOpts
 }
 
 type serverOpts struct {
 }
 
-func newServerCmd() *serverCmd {
-	root := &serverCmd{}
+func NewServerCmd() *ServerCmd {
+	root := &ServerCmd{}
 	cmd := &cobra.Command{
 		Use:               "server",
 		Aliases:           []string{"s"},
@@ -45,6 +45,6 @@ func newServerCmd() *serverCmd {
 			return nil
 		},
 	}
-	root.cmd = cmd
+	root.Cmd = cmd
 	return root
 }

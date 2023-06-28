@@ -44,7 +44,7 @@ type Flags struct {
 
 // Link register the struct vars globally for parsing by the flag library.
 func (f *Flags) Link() {
-	flag.StringVar(&f.ConfigPath, "c", "datalift-config.yaml", "path to YAML configuration")
+	flag.StringVar(&f.ConfigPath, "c", "datalift.yaml", "path to YAML configuration")
 	flag.BoolVar(&f.Template, "template", false, "executes go templates on the configuration file")
 	flag.BoolVar(&f.Validate, "validate", false, "validates the configuration file and exits")
 	flag.BoolVar(&f.Debug, "debug", false, "print the final composed configuration file to stdout")

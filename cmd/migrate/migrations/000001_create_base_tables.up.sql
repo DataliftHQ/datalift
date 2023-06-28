@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS application
     created_by varchar(255) not null
 );
 
-CREATE TABLE IF NOT EXISTS authn_tokens(
+CREATE TABLE IF NOT EXISTS authn_tokens
 (
     user_id       text not null,
     provider      text not null,

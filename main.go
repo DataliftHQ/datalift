@@ -4,9 +4,8 @@ import (
 	_ "embed"
 	"os"
 
-	goversion "github.com/caarlos0/go-version"
-
 	"go.datalift.io/datalift/cmd"
+	ver "go.datalift.io/datalift/internal/version"
 )
 
 // nolint: gochecknoglobals
@@ -31,11 +30,11 @@ const website = "https://datalift.io"
 //go:embed art.txt
 var asciiArt string
 
-func buildVersion(version, commit, date, builtBy string) goversion.Info {
-	return goversion.GetVersionInfo(
-		goversion.WithAppDetails("Datalift", "Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily", website),
-		goversion.WithASCIIName(asciiArt),
-		func(i *goversion.Info) {
+func buildVersion(version, commit, date, builtBy string) ver.Info {
+	return ver.GetVersionInfo(
+		ver.WithAppDetails("Datalift", "Platform Orchestrator that helps developers build, deploy, and manage their applications more quickly and easily", website),
+		ver.WithASCIIName(asciiArt),
+		func(i *ver.Info) {
 			if commit != "" {
 				i.GitCommit = commit
 			}
