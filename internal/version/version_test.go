@@ -71,7 +71,7 @@ func TestGetGitVersion(t *testing.T) {
 }
 
 func TestGetDirty(t *testing.T) {
-	t.Run(unknown, func(t *testing.T) {
+	t.Run("unknown", func(t *testing.T) {
 		if got := getDirty(&debug.BuildInfo{}); got != "" {
 			t.Fatalf("expected empty string, got %q", got)
 		}
@@ -103,7 +103,7 @@ func TestGetDirty(t *testing.T) {
 }
 
 func TestGetBuildDate(t *testing.T) {
-	t.Run(unknown, func(t *testing.T) {
+	t.Run("unknown", func(t *testing.T) {
 		if got := getBuildDate(&debug.BuildInfo{}); got != "" {
 			t.Fatalf("expected empty string, got %q", got)
 		}

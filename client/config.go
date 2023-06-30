@@ -15,18 +15,15 @@ import (
 )
 
 type Config struct {
-	// Optional: To set the host:port for this client to connect to.
-	// default: localhost:7233
-	HostPort string
-
-	AuthToken string
-
-	Context           context.Context
-	ConnectionOptions ConnectionOptions
+	HostPort                 string
+	AuthToken                string
+	DisableTransportSecurity bool
+	ConnectionOptions        ConnectionOptions
 }
 
 type tokenAuth struct {
-	token string
+	token                    string
+	disableTransportSecurity bool
 }
 
 func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[string]string, error) {
@@ -35,8 +32,8 @@ func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[st
 	}, nil
 }
 
-func (tokenAuth) RequireTransportSecurity() bool {
-	return true
+func (t tokenAuth) RequireTransportSecurity() bool {
+	return !t.disableTransportSecurity
 }
 
 type ConnectionOptions struct {
@@ -66,12 +63,13 @@ type ConnectionOptions struct {
 }
 
 func (c *Config) CheckAndSetDefaults() error {
-	if c.Context == nil {
-		c.Context = context.Background()
-	}
+	// Optional: To set the host:port for this client to connect to.
+	// default: localhost:7233
 	if c.HostPort == "" {
 		c.HostPort = net.JoinHostPort(defaults.DefaultHost, strconv.Itoa(defaults.DefaultPort))
 	}
+
+	// Set defaults
 	if c.ConnectionOptions.DialTimeout == 0 {
 		c.ConnectionOptions.DialTimeout = defaults.DefaultDialTimeout
 	}
@@ -83,11 +81,12 @@ func (c *Config) CheckAndSetDefaults() error {
 	}
 
 	if len(c.AuthToken) == 0 {
-		return errors.New("missing auth token")
+		return errors.New("oauth token is required")
 	}
 	c.ConnectionOptions.DialOptions = append(
 		c.ConnectionOptions.DialOptions, grpc.WithPerRPCCredentials(tokenAuth{
-			token: c.AuthToken,
+			token:                    c.AuthToken,
+			disableTransportSecurity: c.DisableTransportSecurity,
 		}),
 	)
 
