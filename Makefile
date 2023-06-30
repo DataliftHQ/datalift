@@ -10,9 +10,6 @@ MAKEFLAGS += --no-print-directory
 #   Master/dev branch: "1.0.0-dev"
 VERSION ?= 0.0.0-dev
 
-GIT_COMMIT ?= $(shell git rev-parse HEAD)
-GIT_COMMIT_DATE ?= $(shell git show -s --format=%cd --date=iso-strict HEAD)
-
 YARN := ./build/bin/yarn.sh
 PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
@@ -23,18 +20,18 @@ PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 .PHONY: proto # Generate protobuf assets.
 proto:
 	tools/buf.sh generate
-	cd server && ../tools/buf.sh generate
+	cd internal && ../tools/buf.sh generate
 
 .PHONY: proto-lint # Lint the generated protobuf assets.
 proto-lint:
 	tools/buf.sh lint
-	cd server && ../tools/buf.sh lint
+	cd internal && ../tools/buf.sh lint
 
 .PHONY: proto-verify # Verify proto changes include generate server assets.
 proto-verify:
-	find server/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
+	find internal/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
 	$(MAKE) proto
-	tools/ensure-no-diff.sh api server/config
+	tools/ensure-no-diff.sh api internal/config
 
 .PHONY: server # Build the standalone server.
 server: preflight-checks-server
@@ -161,17 +158,10 @@ dev-k8s-down:
 preflight-checks:
 	@tools/preflight-checks.sh
 
-.PHONY: preflight-checks-worker
-preflight-checks-worker:
-	@tools/preflight-checks.sh worker
-
-.PHONY: worker # Build the standalone worker.
-worker: preflight-checks-worker
-	cd worker && go build -o ../build/worker -ldflags="-X main.version=$(VERSION)"
-
-
 .PHONY: build
 build:
-	go build -o ./build/datalift -ldflags '-X "main.version=$(VERSION)" -X "main.commit=$(GIT_COMMIT)" -X "main.date=$(GIT_COMMIT_DATE)" -X "main.builtBy=makefile"'
+	go build -o ./build/datalift -ldflags "-X 'go.datalift.io/datalift/internal/version.version=$(VERSION)' -X 'go.datalift.io/datalift/internal/version.builtBy=datalift'"
 
-
+.PHONY: build-with-assets
+build-with-assets:
+	 go run cmd/assets/generate.go ./web/build && go build -tags withAssets -o ./build/datalift -ldflags "-X 'go.datalift.io/datalift/internal/version.version=$(VERSION)' -X 'go.datalift.io/datalift/internal/version.builtBy=datalift'"

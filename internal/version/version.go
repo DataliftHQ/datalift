@@ -1,6 +1,7 @@
 package version
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"runtime"
@@ -10,12 +11,17 @@ import (
 	"time"
 )
 
-const unknown = "unknown"
+// nolint: gochecknoglobals
+var (
+	version = ""
+	commit  = ""
+	date    = ""
+	builtBy = ""
+)
 
 // Info provides the version info.
 type Info struct {
-	GitVersion   string `json:"gitVersion"`
-	ModuleSum    string `json:"moduleCheksum"`
+	Version      string `json:"version"`
 	GitCommit    string `json:"gitCommit"`
 	GitTreeState string `json:"gitTreeState"`
 	BuildDate    string `json:"buildDate"`
@@ -96,7 +102,7 @@ func firstNonEmpty(ss ...string) string {
 	return ""
 }
 
-// Option can be used to customize the version after its gathered from the
+// Option can be used to customize the version after it's gathered from the
 // environment.
 type Option func(i *Info)
 
@@ -123,21 +129,19 @@ func WithBuiltBy(name string) Option {
 	}
 }
 
-// TODO: write more WithXXX functions?
-
 // GetVersionInfo represents known information on how this binary was built.
 func GetVersionInfo(options ...Option) Info {
 	buildInfo := getBuildInfo()
 	i := Info{
-		GitVersion:   firstNonEmpty(getGitVersion(buildInfo), "devel"),
-		ModuleSum:    firstNonEmpty(buildInfo.Main.Sum, unknown),
-		GitCommit:    firstNonEmpty(getCommit(buildInfo), unknown),
-		GitTreeState: firstNonEmpty(getDirty(buildInfo), unknown),
-		BuildDate:    firstNonEmpty(getBuildDate(buildInfo), unknown),
-		BuiltBy:      unknown,
-		GoVersion:    runtime.Version(),
-		Compiler:     runtime.Compiler,
-		Platform:     fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH),
+		Version:      firstNonEmpty(version, getGitVersion(buildInfo), "devel"),
+		GitCommit:    firstNonEmpty(commit, getCommit(buildInfo), "unknown"),
+		GitTreeState: firstNonEmpty(getDirty(buildInfo), "unknown"),
+		BuildDate:    firstNonEmpty(date, getBuildDate(buildInfo), "unknown"),
+		BuiltBy:      firstNonEmpty(builtBy, "unknown"),
+
+		GoVersion: runtime.Version(),
+		Compiler:  runtime.Compiler,
+		Platform:  fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH),
 	}
 	for _, opt := range options {
 		opt(&i)
@@ -165,14 +169,13 @@ func (i Info) String() string {
 		_, _ = fmt.Fprint(w, "\n\n")
 	}
 
-	_, _ = fmt.Fprintf(w, "GitVersion:\t%s\n", i.GitVersion)
+	_, _ = fmt.Fprintf(w, "Version:\t%s\n", i.Version)
 	_, _ = fmt.Fprintf(w, "GitCommit:\t%s\n", i.GitCommit)
 	_, _ = fmt.Fprintf(w, "GitTreeState:\t%s\n", i.GitTreeState)
 	_, _ = fmt.Fprintf(w, "BuildDate:\t%s\n", i.BuildDate)
 	_, _ = fmt.Fprintf(w, "BuiltBy:\t%s\n", i.BuiltBy)
 	_, _ = fmt.Fprintf(w, "GoVersion:\t%s\n", i.GoVersion)
 	_, _ = fmt.Fprintf(w, "Compiler:\t%s\n", i.Compiler)
-	_, _ = fmt.Fprintf(w, "ModuleSum:\t%s\n", i.ModuleSum)
 	_, _ = fmt.Fprintf(w, "Platform:\t%s\n", i.Platform)
 
 	_ = w.Flush()

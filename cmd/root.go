@@ -26,6 +26,7 @@ func Execute(version version.Info, exit func(int), args []string) {
 }
 
 func newRootCmd(version version.Info, exit func(int)) *rootCmd {
+	//version version.Info,
 	atom := zap.NewAtomicLevel()
 	logger := zap.New(zapcore.NewCore(
 		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),

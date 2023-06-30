@@ -65,19 +65,6 @@ server() {
   fi
 }
 
-worker() {
-  if ! command -v go -v &> /dev/null; then
-    echo "golang is not installed or cannot be found in the current PATH, this is a required dependency."
-    did_checks_pass=false
-  else
-    current_version=$(go version | { read -r _ _ v _; echo "${v#go}"; })
-    if ! is_version_ok $MIN_GO_VERSION "$current_version"; then
-      echo "golang version must be >= $MIN_GO_VERSION, current version $current_version"
-      did_checks_pass=false
-    fi
-  fi
-}
-
 web() {
   if ! command -v node -v &> /dev/null; then
     echo "nodejs is not installed or cannot be found in the current PATH, this is a required dependency."
@@ -114,13 +101,10 @@ main() {
       server
     elif [ "$1" == "web" ]; then
       web
-    elif [ "$1" == "worker" ]; then
-      worker
     fi
   else
     server
-    frontend
-    worker
+    web
   fi
 
   if [ "$did_checks_pass" = false ] ; then
