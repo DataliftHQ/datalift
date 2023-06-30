@@ -1,12 +1,14 @@
 package migrator
 
 import (
-	"github.com/stretchr/testify/assert"
-	"go.datalift.io/datalift/internal/gateway"
-	"go.uber.org/zap/zaptest"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap/zaptest"
+
+	"go.datalift.io/datalift/internal/gateway"
 )
 
 func TestSetupSqlClient(t *testing.T) {

@@ -16,6 +16,7 @@ import (
 	tallyprom "github.com/uber-go/tally/v4/prometheus"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	gatewayv1 "go.datalift.io/datalift/internal/config/gateway/v1"
 	"go.datalift.io/datalift/internal/gateway/meta"
@@ -27,7 +28,6 @@ import (
 	"go.datalift.io/datalift/internal/middleware/timeouts"
 	"go.datalift.io/datalift/internal/module"
 	"go.datalift.io/datalift/internal/service"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 // The purpose of this identifier is to trim the prefix off datalift component names,

@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"errors"
-	"go.uber.org/zap/zapcore"
 	"os"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"go.datalift.io/datalift/cmd/migrate"
 	"go.datalift.io/datalift/cmd/server"

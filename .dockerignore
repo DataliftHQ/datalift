@@ -15,14 +15,14 @@ server/cmd/assets/generated_assets.go
 
 # frontend
 **/node_modules/
-ui/**/*.tsbuildinfo
-ui/**/.eslintcache
-ui/**/build/
-ui/**/dist/
-ui/**/screenshots
-ui/*-debug.log
-ui/.yarn
-ui/coverage
+web/**/*.tsbuildinfo
+web/**/.eslintcache
+web/**/build/
+web/**/dist/
+web/**/screenshots
+web/*-debug.log
+web/.yarn
+web/coverage
 
 # docs
 docs/

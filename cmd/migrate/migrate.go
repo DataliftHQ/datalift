@@ -2,11 +2,12 @@ package migrate
 
 import (
 	"embed"
-	_ "embed"
+
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/spf13/cobra"
-	"go.datalift.io/datalift/internal/migrator"
 	"go.uber.org/zap"
+
+	"go.datalift.io/datalift/internal/migrator"
 )
 
 //go:embed migrations/*.sql

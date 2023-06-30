@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/spf13/cobra"
+
 	"go.datalift.io/datalift/cmd/assets"
 	"go.datalift.io/datalift/internal/gateway"
 )

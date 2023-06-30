@@ -1,11 +1,13 @@
 package worker
 
 import (
-	"github.com/spf13/cobra"
-	"go.temporal.io/sdk/client"
-	"go.temporal.io/sdk/worker"
 	"log"
 	"os"
+
+	"github.com/spf13/cobra"
+
+	"go.temporal.io/sdk/client"
+	"go.temporal.io/sdk/worker"
 )
 
 type WorkerCmd struct {
