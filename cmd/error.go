@@ -14,6 +14,7 @@ func wrapErrorWithCode(err error, code int, details string) *exitError {
 	}
 }
 
+//nolint:unused
 func wrapError(err error, log string) *exitError {
 	return wrapErrorWithCode(err, 1, log)
 }
