@@ -6,7 +6,6 @@ report_sizes: true
 builds:
   - id: "datalift"
     binary: "datalift"
-    dir: server
     env:
       - CGO_ENABLED=0
     goos:
