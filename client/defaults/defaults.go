@@ -4,7 +4,7 @@ import "time"
 
 const (
 	DefaultHost             = "localhost"
-	DefaultPort             = 8080
+	DefaultPort             = 9443
 	DefaultDialTimeout      = 30 * time.Second
 	DefaultKeepAliveTime    = 30 * time.Second
 	DefaultKeepAliveTimeout = 90 * time.Second

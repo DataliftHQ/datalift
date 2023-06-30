@@ -15,15 +15,13 @@ import (
 )
 
 type Config struct {
-	HostPort                 string
-	AuthToken                string
-	DisableTransportSecurity bool
-	ConnectionOptions        ConnectionOptions
+	HostPort          string
+	AuthToken         string
+	ConnectionOptions ConnectionOptions
 }
 
 type tokenAuth struct {
-	token                    string
-	disableTransportSecurity bool
+	token string
 }
 
 func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[string]string, error) {
@@ -33,10 +31,11 @@ func (t tokenAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[st
 }
 
 func (t tokenAuth) RequireTransportSecurity() bool {
-	return !t.disableTransportSecurity
+	return true
 }
 
 type ConnectionOptions struct {
+	// Optional: To set the host:port for this client to connect to.
 	TLSConfig *tls.Config
 
 	DialOptions []grpc.DialOption
@@ -63,8 +62,7 @@ type ConnectionOptions struct {
 }
 
 func (c *Config) CheckAndSetDefaults() error {
-	// Optional: To set the host:port for this client to connect to.
-	// default: localhost:7233
+
 	if c.HostPort == "" {
 		c.HostPort = net.JoinHostPort(defaults.DefaultHost, strconv.Itoa(defaults.DefaultPort))
 	}
@@ -85,8 +83,7 @@ func (c *Config) CheckAndSetDefaults() error {
 	}
 	c.ConnectionOptions.DialOptions = append(
 		c.ConnectionOptions.DialOptions, grpc.WithPerRPCCredentials(tokenAuth{
-			token:                    c.AuthToken,
-			disableTransportSecurity: c.DisableTransportSecurity,
+			token: c.AuthToken,
 		}),
 	)
 
