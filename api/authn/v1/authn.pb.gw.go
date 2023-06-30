@@ -223,7 +223,7 @@ func RegisterAuthnAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Login", runtime.WithHTTPPathPattern("/v1/authn/login"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Login", runtime.WithHTTPPathPattern("/api/v1/authn/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -273,7 +273,7 @@ func RegisterAuthnAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Callback", runtime.WithHTTPPathPattern("/v1/authn/callback"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Callback", runtime.WithHTTPPathPattern("/api/v1/authn/callback"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -323,7 +323,7 @@ func RegisterAuthnAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/CreateToken", runtime.WithHTTPPathPattern("/v1/authn/createToken"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/CreateToken", runtime.WithHTTPPathPattern("/api/v1/authn/createToken"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -387,7 +387,7 @@ func RegisterAuthnAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Login", runtime.WithHTTPPathPattern("/v1/authn/login"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Login", runtime.WithHTTPPathPattern("/api/v1/authn/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -431,7 +431,7 @@ func RegisterAuthnAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Callback", runtime.WithHTTPPathPattern("/v1/authn/callback"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/Callback", runtime.WithHTTPPathPattern("/api/v1/authn/callback"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -475,7 +475,7 @@ func RegisterAuthnAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/CreateToken", runtime.WithHTTPPathPattern("/v1/authn/createToken"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/datalift.authn.v1.AuthnAPI/CreateToken", runtime.WithHTTPPathPattern("/api/v1/authn/createToken"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -495,15 +495,15 @@ func RegisterAuthnAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_AuthnAPI_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "authn", "login"}, ""))
+	pattern_AuthnAPI_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "authn", "login"}, ""))
 
 	pattern_AuthnAPI_Login_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"auth", "login"}, ""))
 
-	pattern_AuthnAPI_Callback_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "authn", "callback"}, ""))
+	pattern_AuthnAPI_Callback_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "authn", "callback"}, ""))
 
 	pattern_AuthnAPI_Callback_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"auth", "callback"}, ""))
 
-	pattern_AuthnAPI_CreateToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "authn", "createToken"}, ""))
+	pattern_AuthnAPI_CreateToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "authn", "createToken"}, ""))
 )
 
 var (

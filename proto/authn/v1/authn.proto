@@ -11,7 +11,7 @@ import "common/v1/annotations.proto";
 service AuthnAPI {
   rpc Login(LoginRequest) returns (LoginResponse) {
     option (google.api.http) = {
-      get: "/v1/authn/login"
+      get: "/api/v1/authn/login"
       additional_bindings: {get: "/auth/login"}
     };
     option (datalift.common.v1.action).type = READ;
@@ -19,7 +19,7 @@ service AuthnAPI {
 
   rpc Callback(CallbackRequest) returns (CallbackResponse) {
     option (google.api.http) = {
-      get: "/v1/authn/callback"
+      get: "/api/v1/authn/callback"
       additional_bindings: {get: "/auth/callback"}
     };
     option (datalift.common.v1.action).type = CREATE;
@@ -27,7 +27,7 @@ service AuthnAPI {
 
   rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse) {
     option (google.api.http) = {
-      post: "/v1/authn/createToken"
+      post: "/api/v1/authn/createToken"
       body: "*"
     };
     option (datalift.common.v1.action).type = CREATE;

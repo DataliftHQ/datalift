@@ -4,6 +4,7 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
+	"google.golang.org/grpc/credentials/insecure"
 	"sync/atomic"
 
 	"google.golang.org/grpc"
@@ -51,7 +52,7 @@ func New(ctx context.Context, cfg Config) (client *Client, err error) {
 		closedFlag: new(int32),
 	}
 	if err := client.dialGRPC(ctx, cfg.HostPort); err != nil {
-		return nil, fmt.Errorf("failed to connect to addr %v as an auth server", cfg.HostPort)
+		return nil, fmt.Errorf("failed to connect to addr %v due to '%s'", cfg.HostPort, err)
 	}
 	return client, nil
 }
@@ -70,17 +71,14 @@ func (c *Client) dialGRPC(ctx context.Context, hostPort string) error {
 		),
 	)
 
-	// -----------------------------------------------
-	// TODO: review
-	// cfg
-
 	// Only set transportCredentials if tlsConfig is set. This makes it possible
 	// to explicitly provide grpc.WithTransportCredentials(insecure.NewCredentials())
 	// in the client's dial options.
 	if c.config.ConnectionOptions.TLSConfig != nil {
 		dialOpts = append(dialOpts, grpc.WithTransportCredentials(credentials.NewTLS(c.config.ConnectionOptions.TLSConfig)))
+	} else {
+		dialOpts = append(dialOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
-	// -----------------------------------------------
 
 	// must come last, otherwise provided opts may get clobbered by defaults above
 	dialOpts = append(dialOpts, c.config.ConnectionOptions.DialOptions...)
