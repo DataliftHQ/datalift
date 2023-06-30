@@ -83,13 +83,19 @@ type AssetsAPIHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAssetsAPIHandler(svc AssetsAPIHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(AssetsAPIFetchProcedure, connect_go.NewUnaryHandler(
+	assetsAPIFetchHandler := connect_go.NewUnaryHandler(
 		AssetsAPIFetchProcedure,
 		svc.Fetch,
 		opts...,
-	))
-	return "/datalift.assets.v1.AssetsAPI/", mux
+	)
+	return "/datalift.assets.v1.AssetsAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case AssetsAPIFetchProcedure:
+			assetsAPIFetchHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedAssetsAPIHandler returns CodeUnimplemented from all methods.

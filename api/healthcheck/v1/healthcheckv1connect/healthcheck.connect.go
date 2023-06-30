@@ -82,13 +82,19 @@ type HealthcheckAPIHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewHealthcheckAPIHandler(svc HealthcheckAPIHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(HealthcheckAPIHealthcheckProcedure, connect_go.NewUnaryHandler(
+	healthcheckAPIHealthcheckHandler := connect_go.NewUnaryHandler(
 		HealthcheckAPIHealthcheckProcedure,
 		svc.Healthcheck,
 		opts...,
-	))
-	return "/datalift.healthcheck.v1.HealthcheckAPI/", mux
+	)
+	return "/datalift.healthcheck.v1.HealthcheckAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case HealthcheckAPIHealthcheckProcedure:
+			healthcheckAPIHealthcheckHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedHealthcheckAPIHandler returns CodeUnimplemented from all methods.

@@ -15,7 +15,7 @@ import (
 	authnservice "go.datalift.io/datalift/internal/service/authn"
 	awsservice "go.datalift.io/datalift/internal/service/aws"
 	pgservice "go.datalift.io/datalift/internal/service/db/postgres"
-	workflowservice "go.datalift.io/datalift/internal/service/workflow"
+	temporalservice "go.datalift.io/datalift/internal/service/temporal"
 )
 
 var Middleware = middleware.Factory{
@@ -38,7 +38,7 @@ var Services = service.Factory{
 	awsservice.Name:          awsservice.New,
 	pgservice.Name:           pgservice.New,
 	appservice.Name:          appservice.New,
-	workflowservice.Name:     workflowservice.New,
+	temporalservice.Name:     temporalservice.New,
 }
 
 var CoreComponentFactory = &ComponentFactory{

@@ -146,33 +146,47 @@ type ApplicationAPIHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewApplicationAPIHandler(svc ApplicationAPIHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(ApplicationAPICreateApplicationProcedure, connect_go.NewUnaryHandler(
+	applicationAPICreateApplicationHandler := connect_go.NewUnaryHandler(
 		ApplicationAPICreateApplicationProcedure,
 		svc.CreateApplication,
 		opts...,
-	))
-	mux.Handle(ApplicationAPIDeleteApplicationProcedure, connect_go.NewUnaryHandler(
+	)
+	applicationAPIDeleteApplicationHandler := connect_go.NewUnaryHandler(
 		ApplicationAPIDeleteApplicationProcedure,
 		svc.DeleteApplication,
 		opts...,
-	))
-	mux.Handle(ApplicationAPIGetApplicationProcedure, connect_go.NewUnaryHandler(
+	)
+	applicationAPIGetApplicationHandler := connect_go.NewUnaryHandler(
 		ApplicationAPIGetApplicationProcedure,
 		svc.GetApplication,
 		opts...,
-	))
-	mux.Handle(ApplicationAPIListApplicationsProcedure, connect_go.NewUnaryHandler(
+	)
+	applicationAPIListApplicationsHandler := connect_go.NewUnaryHandler(
 		ApplicationAPIListApplicationsProcedure,
 		svc.ListApplications,
 		opts...,
-	))
-	mux.Handle(ApplicationAPIUpdateApplicationProcedure, connect_go.NewUnaryHandler(
+	)
+	applicationAPIUpdateApplicationHandler := connect_go.NewUnaryHandler(
 		ApplicationAPIUpdateApplicationProcedure,
 		svc.UpdateApplication,
 		opts...,
-	))
-	return "/datalift.application.v1.ApplicationAPI/", mux
+	)
+	return "/datalift.application.v1.ApplicationAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case ApplicationAPICreateApplicationProcedure:
+			applicationAPICreateApplicationHandler.ServeHTTP(w, r)
+		case ApplicationAPIDeleteApplicationProcedure:
+			applicationAPIDeleteApplicationHandler.ServeHTTP(w, r)
+		case ApplicationAPIGetApplicationProcedure:
+			applicationAPIGetApplicationHandler.ServeHTTP(w, r)
+		case ApplicationAPIListApplicationsProcedure:
+			applicationAPIListApplicationsHandler.ServeHTTP(w, r)
+		case ApplicationAPIUpdateApplicationProcedure:
+			applicationAPIUpdateApplicationHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedApplicationAPIHandler returns CodeUnimplemented from all methods.

@@ -37,11 +37,11 @@ services:
     typed_config:
       "@type": types.google.com/datalift.config.service.db.postgres.v1.Config
       connection:
-        host: 0.0.0.0
+        host: ${DATALIFT_DATABASE_HOST}
         port: 5432
-        dbname: datalift
-        user: datalift
-        password: datalift
+        dbname: ${DATALIFT_DATABASE_SCHEMA}
+        user: ${DATALIFT_DATABASE_USER}
+        password: ${DATALIFT_DATABASE_PASSWORD}
         ssl_mode: DISABLE
   - name: datalift.service.authn.storage
     typed_config:
@@ -51,15 +51,19 @@ services:
     typed_config:
       "@type": types.google.com/datalift.config.service.authn.v1.Config
       oidc:
-        issuer: https://accounts.google.com
+        issuer: ${DATALIFT_AUTHN_ISSUER}
         client_id: ${DATALIFT_AUTHN_CLIENT_ID}
         client_secret: ${DATALIFT_AUTHN_CLIENT_SECRET}
-        redirect_url: "http://localhost:8080/auth/callback"
+        redirect_url: ${DATALIFT_AUTHN_CALLBACK}
         scopes:
           - openid
           - profile
           - email
       session_secret: ${DATALIFT_AUTHN_SESSION_SECRET}
       enable_service_token_creation: true
+  - name: datalift.service.temporal
+    typed_config:
+      "@type": types.google.com/datalift.config.service.temporal.v1.Config
+      host: localhost
+      port: 7233
   - name: datalift.service.application
-  - name: datalift.service.workflow

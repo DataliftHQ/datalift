@@ -111,23 +111,33 @@ type AuthnAPIHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAuthnAPIHandler(svc AuthnAPIHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(AuthnAPILoginProcedure, connect_go.NewUnaryHandler(
+	authnAPILoginHandler := connect_go.NewUnaryHandler(
 		AuthnAPILoginProcedure,
 		svc.Login,
 		opts...,
-	))
-	mux.Handle(AuthnAPICallbackProcedure, connect_go.NewUnaryHandler(
+	)
+	authnAPICallbackHandler := connect_go.NewUnaryHandler(
 		AuthnAPICallbackProcedure,
 		svc.Callback,
 		opts...,
-	))
-	mux.Handle(AuthnAPICreateTokenProcedure, connect_go.NewUnaryHandler(
+	)
+	authnAPICreateTokenHandler := connect_go.NewUnaryHandler(
 		AuthnAPICreateTokenProcedure,
 		svc.CreateToken,
 		opts...,
-	))
-	return "/datalift.authn.v1.AuthnAPI/", mux
+	)
+	return "/datalift.authn.v1.AuthnAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case AuthnAPILoginProcedure:
+			authnAPILoginHandler.ServeHTTP(w, r)
+		case AuthnAPICallbackProcedure:
+			authnAPICallbackHandler.ServeHTTP(w, r)
+		case AuthnAPICreateTokenProcedure:
+			authnAPICreateTokenHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedAuthnAPIHandler returns CodeUnimplemented from all methods.

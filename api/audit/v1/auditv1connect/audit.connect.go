@@ -96,18 +96,26 @@ type AuditAPIHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAuditAPIHandler(svc AuditAPIHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(AuditAPIGetEventsProcedure, connect_go.NewUnaryHandler(
+	auditAPIGetEventsHandler := connect_go.NewUnaryHandler(
 		AuditAPIGetEventsProcedure,
 		svc.GetEvents,
 		opts...,
-	))
-	mux.Handle(AuditAPIGetEventProcedure, connect_go.NewUnaryHandler(
+	)
+	auditAPIGetEventHandler := connect_go.NewUnaryHandler(
 		AuditAPIGetEventProcedure,
 		svc.GetEvent,
 		opts...,
-	))
-	return "/datalift.audit.v1.AuditAPI/", mux
+	)
+	return "/datalift.audit.v1.AuditAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case AuditAPIGetEventsProcedure:
+			auditAPIGetEventsHandler.ServeHTTP(w, r)
+		case AuditAPIGetEventProcedure:
+			auditAPIGetEventHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedAuditAPIHandler returns CodeUnimplemented from all methods.

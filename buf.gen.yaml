@@ -30,6 +30,6 @@ plugins:
     opt:
       - paths=source_relative
   - plugin: buf.build/bufbuild/es
-    out: ui/src/api
+    out: web/src/api
   - plugin: buf.build/bufbuild/connect-es
-    out: ui/src/api
+    out: web/src/api
