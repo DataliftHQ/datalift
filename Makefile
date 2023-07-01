@@ -3,13 +3,15 @@ SHELL:=/usr/bin/env bash
 
 MAKEFLAGS += --no-print-directory
 
-DOCS_DEPLOY_USE_SSH ?= true
-DOCS_DEPLOY_GIT_USER ?= git
+# To update the version, update VERSION variable:
+# Naming convention:
+#   Stable releases:   "1.0.0"
+#   Pre-releases:      "1.0.0-alpha.1", "1.0.0-beta.2", "1.0.0-rc.3"
+#   Master/dev branch: "1.0.0-dev"
+VERSION ?= 0.0.0-dev
 
-VERSION := 0.0.0
-
-YARN:=./build/bin/yarn.sh
-PROJECT_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+YARN := ./build/bin/yarn.sh
+PROJECT_ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: help # Print this help message.
  help:
@@ -17,27 +19,27 @@ PROJECT_ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: proto # Generate protobuf assets.
 proto:
-	buf generate
-	cd server && buf generate
+	tools/buf.sh generate
+	cd internal && ../tools/buf.sh generate
 
 .PHONY: proto-lint # Lint the generated protobuf assets.
 proto-lint:
-	buf lint
-	cd server && buf lint
+	tools/buf.sh lint
+	cd internal && ../tools/buf.sh lint
 
 .PHONY: proto-verify # Verify proto changes include generate server assets.
 proto-verify:
-	find server/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
+	find internal/config -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;
 	$(MAKE) proto
-	tools/ensure-no-diff.sh server/api server/config
+	tools/ensure-no-diff.sh api internal/config
 
 .PHONY: server # Build the standalone server.
 server: preflight-checks-server
 	cd server && go build -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
-.PHONY: server-with-assets # Build the server with frontend assets.
+.PHONY: server-with-assets # Build the server with web assets.
 server-with-assets: preflight-checks-server
-	cd server && go run cmd/assets/generate.go ../frontend/build && go build -tags withAssets -o ../build/server -ldflags="-X main.version=$(VERSION)"
+	cd server && go run cmd/assets/generate.go ../ui/build && go build -tags withAssets -o ../build/server -ldflags="-X main.version=$(VERSION)"
 
 .PHONY: server-dev # Start the server in development mode.
 server-dev: preflight-checks-server
@@ -49,7 +51,7 @@ server-dev-mock:
 
 .PHONY: server-lint # Lint the server code.
 server-lint: preflight-checks-server
-	tools/golangci-lint.sh run --timeout 2m30s
+	cd server && ../tools/golangci-lint.sh run --timeout 2m30s
 
 .PHONY: server-lint-fix # Lint and fix the server code.
 server-lint-fix:
@@ -67,80 +69,81 @@ server-verify:
 
 .PHONY: server-config-validation
 server-config-validation:
-	cd server && go run main.go -validate -c datalift-config.yaml
+	cd server && go run main.go -validate -c ../config/datalift-config.yaml
 
 .PHONY: preflight-checks-server
 preflight-checks-server:
 	@tools/preflight-checks.sh server
 
-.PHONY: frontend # Build production frontend assets.
-frontend: yarn-ensure preflight-checks-frontend yarn-install
-	$(YARN) --cwd frontend build
+.PHONY: web # Build production web assets.
+web: yarn-ensure preflight-checks-web yarn-install
+	$(YARN) --cwd web build
 
-.PHONY: frontend-dev-build # Build development frontend assets.
-frontend-dev-build: yarn-install
-	$(YARN) --cwd frontend preview
+.PHONY: web-dev-build # Build development web assets.
+web-dev-build: yarn-install
+	$(YARN) --cwd web preview
 
-.PHONY: frontend-dev # Start the frontend in development mode.
-frontend-dev: yarn-install
-	$(YARN) --cwd frontend dev
+.PHONY: web-dev # Start the web in development mode.
+web-dev: yarn-install
+	$(YARN) --cwd web dev
 
-.PHONY: frontend-lint # Lint the frontend code.
-frontend-lint: yarn-ensure
-	$(YARN) --cwd frontend lint
+.PHONY: web-lint # Lint the web code.
+web-lint: yarn-ensure
+	$(YARN) --cwd web lint
 
-.PHONY: frontend-lint-fix # Lint and fix the frontend code.
-frontend-lint-fix: yarn-ensure
-	$(YARN) --cwd frontend lint:fix
+.PHONY: web-lint-fix # Lint and fix the web code.
+web-lint-fix: yarn-ensure
+	$(YARN) --cwd web lint:fix
 
-.PHONY: frontend-test # Run unit tests for the frontend code.
-frontend-test: yarn-ensure
-	$(YARN) --cwd frontend test
+.PHONY: web-test # Run unit tests for the web code.
+web-test: yarn-ensure
+	$(YARN) --cwd web test
 
 # TODO: FIX ME
-.PHONY: frontend-verify # Verify frontend packages are sorted.
-frontend-verify: yarn-ensure
-	$(YARN) --cwd frontend lint:packages
+.PHONY: web-verify # Verify web packages are sorted.
+web-verify: yarn-ensure
+	$(YARN) --cwd web lint:packages
 
-.PHONY: yarn-install # Install frontend dependencies.
+.PHONY: yarn-install # Install web dependencies.
 yarn-install: yarn-ensure
-	$(YARN) --cwd frontend install --frozen-lockfile
+	$(YARN) --cwd web install --frozen-lockfile --network-timeout 150000
 
 .PHONY: yarn-ensure # Install the pinned version of yarn.
 yarn-ensure:
-	@./tools/install-yarn.sh
+	@tools/install-yarn.sh
 
-.PHONY: preflight-checks-frontend
-preflight-checks-frontend:
-	@tools/preflight-checks.sh frontend
+.PHONY: preflight-checks-web
+preflight-checks-web:
+	@tools/preflight-checks.sh web
 
-.PHONY: dev # Run the Clutch application in development mode.
+.PHONY: dev # Run the application in development mode.
 dev:
-	$(MAKE) -j2 server-dev frontend-dev
+	$(MAKE) -j2 server-dev web-dev
 
-.PHONY: dev-mock # Run the Clutch application in development mode with mock responses.
+.PHONY: dev-mock # Run the application in development mode with mock responses.
 dev-mock:
-	$(MAKE) -j2 server-dev-mock frontend-dev
+	$(MAKE) -j2 server-dev-mock web-dev
 
 .PHONY: lint # Lint all of the code.
-lint: proto-lint server-lint frontend-lint
+lint: proto-lint server-lint web-lint
 
 .PHONY: lint-fix # Lint and fix all of the code.
-lint-fix: server-lint-fix frontend-lint-fix
+lint-fix: server-lint-fix web-lint-fix
 
 .PHONY: test # Unit test all of the code.
-test: server-test frontend-test
+test: server-test web-test
 
 .PHONY: verify # Verify all of the code.
-verify: proto-verify server-verify frontend-verify
+verify: proto-verify server-verify web-verify
 
 .PHONY: clean # Remove build and cache artifacts.
 clean:
-	rm -rf build frontend/build frontend/node_modules frontend/.yarn
+	rm -rf build
+	cd web && rm -rf build node_modules .yarn
 
 .PHONY: dev-k8s-up # Start a local k8s cluster.
 dev-k8s-up:
-	@tools/kind.sh create cluster --kubeconfig $(PROJECT_ROOT_DIR)/build/kubeconfig-clutch --name datalift-local || true
+	@tools/kind.sh create cluster --kubeconfig $(PROJECT_ROOT_DIR)/build/kubeconfig-datalift --name datalift-local || true
 	@tools/kind.sh seed
 
 	@echo
@@ -155,10 +158,10 @@ dev-k8s-down:
 preflight-checks:
 	@tools/preflight-checks.sh
 
-.PHONY: preflight-checks-worker
-preflight-checks-worker:
-	@tools/preflight-checks.sh worker
+.PHONY: build
+build:
+	go build -o ./build/datalift -ldflags "-X 'go.datalift.io/datalift/internal/version.version=$(VERSION)' -X 'go.datalift.io/datalift/internal/version.builtBy=datalift'"
 
-.PHONY: worker # Build the standalone worker.
-worker: preflight-checks-worker
-	cd worker && go build -o ../build/worker -ldflags="-X main.version=$(VERSION)"
+.PHONY: build-with-assets
+build-with-assets:
+	 go run cmd/assets/generate.go ./web/build && go build -tags withAssets -o ./build/datalift -ldflags "-X 'go.datalift.io/datalift/internal/version.version=$(VERSION)' -X 'go.datalift.io/datalift/internal/version.builtBy=datalift'"

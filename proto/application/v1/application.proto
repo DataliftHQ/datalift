@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package datalift.document.v1;
+package datalift.application.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
 
-import "api/v1/annotations.proto";
+import "common/v1/annotations.proto";
 
 service ApplicationAPI {
   rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {
@@ -14,26 +14,26 @@ service ApplicationAPI {
       post: "/api/v1/applications"
       body: "application"
     };
-    option (datalift.api.v1.action).type = CREATE;
+    option (datalift.common.v1.action).type = CREATE;
   }
 
   rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
     option (google.api.http) = {
       delete: "/api/v1/applications/{id}"
     };
-    option (datalift.api.v1.action).type = DELETE;
+    option (datalift.common.v1.action).type = DELETE;
   }
 
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {
     option (google.api.http) = {
       get: "/api/v1/applications/{id}"
     };
-    option (datalift.api.v1.action).type = READ;
+    option (datalift.common.v1.action).type = READ;
   }
 
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
     option (google.api.http).get = "/api/v1/applications";
-    option (datalift.api.v1.action).type = READ;
+    option (datalift.common.v1.action).type = READ;
   }
 
   rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {
@@ -41,7 +41,7 @@ service ApplicationAPI {
       put: "/api/v1/applications/{id}"
       body: "*"
     };
-    option (datalift.api.v1.action).type = UPDATE;
+    option (datalift.common.v1.action).type = UPDATE;
   }
 }
 

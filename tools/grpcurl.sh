@@ -9,7 +9,6 @@ function main() {
 }
 
 function install() {
-  cd "${REPO_ROOT}/backend" || exit 1
   go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 }
 

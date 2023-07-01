@@ -1,70 +1,161 @@
 version: "3.8"
 services:
-  datalift-worker:
-    build:
-      context: ../../
-      dockerfile: ./worker/Dockerfile
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-    networks:
-      - datalift-network
-    depends_on:
-      - temporal
-    restart: always
   postgres:
     container_name: postgresql
     image: postgres:15-alpine
     environment:
+      POSTGRES_DB: datalift
       POSTGRES_USER: datalift
       POSTGRES_PASSWORD: datalift
-      POSTGRES_DB: datalift
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U datalift -d datalift']
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - datalift-network
     ports:
       - 5432:5432
     volumes:
-      - /var/lib/postgresql/data
+      - ./postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
+
   temporal:
     container_name: temporal
-    depends_on:
-      - postgres
-    environment:
-      - DB=postgresql
-      - DB_PORT=5432
-      - POSTGRES_USER=datalift
-      - POSTGRES_PWD=datalift
-      - POSTGRES_SEEDS=postgresql
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
     image: temporalio/auto-setup:latest
+    environment:
+      DB: postgres
+      DB_PORT: 5432
+      POSTGRES_USER: datalift
+      POSTGRES_PWD: datalift
+      POSTGRES_SEEDS: postgresql
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
+    healthcheck:
+      test: ['CMD-SHELL', 'tctl --address temporal:7233 workflow list']
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - datalift-network
     ports:
       - 7233:7233
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+
   temporal-admin-tools:
     container_name: temporal-admin-tools
-    depends_on:
-      - temporal
+    image: temporalio/admin-tools:latest
     environment:
       - TEMPORAL_CLI_ADDRESS=temporal:7233
-    image: temporalio/admin-tools:latest
+    depends_on:
+      temporal:
+        condition: service_healthy
     networks:
       - datalift-network
     stdin_open: true
     tty: true
+    profiles: ["extra"]
+
   temporal-ui:
     container_name: temporal-ui
-    depends_on:
-      - temporal
+    image: temporalio/ui:latest
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-    image: temporalio/ui:latest
+    depends_on:
+      temporal:
+        condition: service_healthy
     networks:
       - datalift-network
     ports:
-      - 8888:8080
+      - 7070:8080
+    profiles: ["extra"]
+
+  datalift-migrate:
+    container_name: datalift-migrate
+    image: datalifthq/datalift:latest
+    command: migrate up -f --verbose
+    environment:
+      DATALIFT_DATABASE_HOST: postgres
+      DATALIFT_DATABASE_SCHEMA: datalift
+      DATALIFT_DATABASE_USER: datalift
+      DATALIFT_DATABASE_PASSWORD: datalift
+    networks:
+      - datalift-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  datalift-server:
+    container_name: datalift-server
+    image: datalifthq/datalift:latest
+    command: server
+    environment:
+      DATALIFT_DATABASE_HOST: postgres
+      DATALIFT_DATABASE_SCHEMA: datalift
+      DATALIFT_DATABASE_USER: datalift
+      DATALIFT_DATABASE_PASSWORD: datalift
+      DATALIFT_AUTHN_ISSUER: https://accounts.google.com
+      DATALIFT_AUTHN_CLIENT_ID: 999252236553-2dd37nnqcf5ta2bh1lv12re5h5nd1jp3.apps.googleusercontent.com
+      DATALIFT_AUTHN_CLIENT_SECRET: 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
+      DATALIFT_AUTHN_SESSION_SECRET: 823916d0-cb6d-4aa5-858c-9630ae6a5634
+      DATALIFT_AUTHN_STORAGE_ENCRYPTION_PASSPHRASE: 15bf5f0e-c486-454d-bd97-a39e2c9c79dc
+      DATALIFT_AUTHN_CALLBACK: https://localhost:9443/auth/callback
+    networks:
+      - datalift-network
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+      datalift-migrate:
+        condition: service_completed_successfully
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+    profiles: ["server"]
+
+  datalift-worker:
+    container_name: datalift-worker
+    image: datalifthq/datalift:latest
+    command: worker
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      DATALIFT_ADDRESS: datalift-server:8080
+    depends_on:
+      temporal:
+        condition: service_healthy
+    networks:
+      - datalift-network
+
+  https-proxy:
+    container_name: https-proxy
+    image: nginx:latest
+    ports:
+      - 9090:9090
+      - 9443:9443
+    networks:
+      - datalift-network
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/dhparam.pem:/etc/nginx/dhparam.pem
+      - ./nginx/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
+      - ./nginx/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
+      - ./nginx/ssl-params.conf:/etc/nginx/ssl-params.conf
+
 networks:
   datalift-network:
     driver: bridge

@@ -7,9 +7,10 @@ tmp_dir = ".air"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -C ./server -o .air/datalift ."
+cmd = "make build-with-assets"
 # Binary file yields from `cmd`.
-bin = "./server/.air/datalift -env .env.local -c ./config/datalift-config.yaml"
+#bin = "./build/datalift server -env .env.local -c ./datalift.yaml"
+bin = "./build/datalift server"
 # Watch these filename extensions.
 include_ext = ["go", "yaml"]
 # This log file places in your tmp_dir.
@@ -25,7 +26,7 @@ kill_delay = 4000 # ms
 # Customize binary.
 # full_bin = "APP_ENV=dev APP_USER=air ./tmp/main"
 # Watch these directories if you specified.
-include_dir = ['server']
+include_dir = ['api', 'internal']
 # Exclude files.
 # exclude_file = []
 
